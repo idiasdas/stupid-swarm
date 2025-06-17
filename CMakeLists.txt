@@ -5,16 +5,18 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(project_target stupid_swarm)
 
 set(include_directories
-    # ext/glfw/include
+    ext/glfw/include
     ext/glad/include
-    # ext/glm
+    ext/glm
+    ext/spdlog/include
     src
 )
 
 set(libraries
     glad
-    # glfw
-    # glm::glm
+    glfw
+    glm::glm
+    spdlog::spdlog
 )
 
 project(${project_target})

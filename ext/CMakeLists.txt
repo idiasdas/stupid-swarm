@@ -4,12 +4,11 @@ find_package(OpenGL REQUIRED)
 
 add_subdirectory(glad)
 
-# set(GLFW_BUILD_DOCS OFF CACHE BOOL "Build the GLFW documentation")
-# set(GLFW_BUILD_X11 ON)
-# set(GLFW_BUILD_WAYLAND OFF)
-#
-# add_subdirectory(glfw)
-# add_subdirectory(glm)
-# add_subdirectory(spdlog)
-# add_subdirectory(imgui)
-#
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "Build the GLFW documentation")
+set(GLFW_BUILD_X11 ON)
+set(GLFW_BUILD_WAYLAND OFF)
+
+add_subdirectory(glfw)
+add_subdirectory(glm)
+add_subdirectory(spdlog)
+
