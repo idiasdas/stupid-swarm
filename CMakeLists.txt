@@ -30,6 +30,10 @@ file(GLOB_RECURSE executable_sources "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 add_executable(stupid-swarm ${executable_sources})
 
+file(RELATIVE_PATH relative ${CMAKE_BINARY_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/utils/")
+message(" [INFO] The relative path between build and utils is:\n\t - ${relative}")
+target_compile_definitions(stupid-swarm PRIVATE EXECUTABLE_UTILS_PATH="${relative}/")
+
 target_compile_options(stupid-swarm PRIVATE -Wall -Wextra -Wpedantic)
 
 target_include_directories(stupid-swarm PUBLIC ${include_directories})
