@@ -12,9 +12,9 @@ class Model {
 public:
     Model();
 
-    void buffer_vertices(const std::vector<float> buffer);
-    void update_buffer_vertices(const std::vector<float> buffer);
-    void buffer_indices(const std::vector<uint32_t> buffer);
+    void buffer_vertices(const std::vector<float>& buffer);
+    void update_buffer_vertices(const std::vector<float>& buffer);
+    void buffer_indices(const std::vector<uint32_t>& buffer);
     void draw(const Shader& shader, const glm::mat4 MVP) const;
     void draw_lines(const Shader& shader, const glm::mat4 MVP) const;
     void scale(const glm::vec3& scale_vector);

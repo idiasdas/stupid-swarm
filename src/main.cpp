@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 
+#include "circle.h"
 #include "log.h"
 #include "renderer/camera.h"
 #include "renderer/model.h"
@@ -24,12 +25,13 @@ int main()
         0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
         0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 1.0f
     };
-
     axes_lines.buffer_vertices(buffer_lines);
-
     axes_lines.buffer_indices({ 0, 1, 2, 3, 4, 5 });
 
+    Model circle = create_circle({ 0.0f, 0.0f }, 0.5f, { 1.0f, 0.0f, 0.0f });
+
     Shader color_shader("shaders/color.vertexShader", "shaders/color.fragmentShader");
+
     double last_time = glfwGetTime();
     int frames_count = 0;
 
@@ -47,7 +49,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         axes_lines.draw_lines(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * axes_lines.get_model_matrix());
-
+        circle.draw(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * axes_lines.get_model_matrix());
         glfwSwapBuffers(context.get_window_handle());
         glfwPollEvents();
 
