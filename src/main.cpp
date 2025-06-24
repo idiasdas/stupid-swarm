@@ -7,7 +7,12 @@
 #include "renderer/opengl-context.h"
 #include "renderer/shader.h"
 
-void event_manager(Event& event) { LOG_INFO(event.to_string()); }
+Camera* g_camera = nullptr;
+void event_manager(Event& event)
+{
+    g_camera->on_event(event);
+    LOG_INFO(event.to_string());
+}
 
 int main()
 {
@@ -15,8 +20,10 @@ int main()
     OpenGLContext context("Stupid Swarm", 1280, 720, event_manager);
 
     Camera camera(&context);
+    g_camera = &camera;
 
     Model axes_lines;
+
     std::vector<float> buffer_lines = {
         0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
         10.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
@@ -28,7 +35,15 @@ int main()
     axes_lines.buffer_vertices(buffer_lines);
     axes_lines.buffer_indices({ 0, 1, 2, 3, 4, 5 });
 
-    Model circle = create_circle({ 0.0f, 0.0f }, 0.5f, { 1.0f, 0.0f, 0.0f });
+    std::vector<Model> circles;
+    int nb_circles = 100;
+    float alpha = 0.0f;
+    float radius = 0.0f;
+    for (int i = 0; i < nb_circles; i++) {
+        circles.push_back(create_circle({ radius * glm::cos(alpha), radius * glm::sin(alpha) }, 0.1f, { 1.0f, 0.0f, 0.0f }));
+        radius += 0.1f;
+        alpha += 2 * glm::pi<float>() / 24;
+    }
 
     Shader color_shader("shaders/color.vertexShader", "shaders/color.fragmentShader");
 
@@ -49,7 +64,8 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         axes_lines.draw_lines(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * axes_lines.get_model_matrix());
-        circle.draw(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * axes_lines.get_model_matrix());
+        for (auto circle : circles)
+            circle.draw(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * axes_lines.get_model_matrix());
         glfwSwapBuffers(context.get_window_handle());
         glfwPollEvents();
 
