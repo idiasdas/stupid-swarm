@@ -1,8 +1,10 @@
 #include "particle.hpp"
 
 #include "GLFW/glfw3.h"
+#include "glm/ext/matrix_transform.hpp"
 #include "glm/fwd.hpp"
-#include "log.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <cstdint>
 #include <vector>
@@ -83,17 +85,18 @@ void Particle::rotate(const float rotation_degree, const glm::vec3& rotation_axi
     m_model.rotate(rotation_degree, rotation_axis);
 }
 
-void Particle::rotate_towards(const float rotation_degree, const glm::vec3& rotation_axis, const float speed)
+void Particle::rotate_around(const float rotation_degree, const glm::vec3& rotation_axis, const float speed)
 {
     double cur_time = glfwGetTime();
     double delta = cur_time - m_last_update_time;
-    rotate(rotation_degree * delta * speed, rotation_axis);
+    m_model.set_translation_matrix(glm::rotate(glm::mat4(1), (float)(rotation_degree * delta * speed), rotation_axis) * m_model.get_translation_matrix());
 }
 
 void Particle::update()
 {
     m_last_update_time = glfwGetTime();
 }
+
 glm::vec2 Particle::get_position() const
 {
     return glm::vec2(m_model.get_model_matrix()[3]);

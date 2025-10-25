@@ -33,7 +33,7 @@ OpenGLContext::OpenGLContext(const std::string& window_name, const int window_wi
     glfwSetInputMode(m_window, GLFW_STICKY_KEYS, GL_FALSE);
     glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     glfwSetCursorPos(m_window, window_height / 2, window_width / 2);
-    glfwSwapInterval(0); // Vsync (0 == off, 1 == on)
+    glfwSwapInterval(1); // Vsync (0 == off, 1 == on)
     glfwPollEvents();
 
     int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);

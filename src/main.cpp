@@ -39,15 +39,14 @@ int main()
     int nb_circles = 100;
     float alpha = 0.0f;
     float radius = 0.0f;
+    glm::vec2 last_point;
     for (int i = 0; i < nb_circles; i++) {
         particles.push_back(Particle({ radius * glm::cos(alpha), radius * glm::sin(alpha) }, 0.1f, ParticleType::DRONE));
         radius += 0.1f;
         alpha += 2 * glm::pi<float>() / 24;
+        last_point = { radius * glm::cos(alpha), radius * glm::sin(alpha) };
     }
 
-    Particle p({ 1.f, 1.f }, 0.4, ParticleType::OBSTACLE);
-    glm::vec2 p_position = p.get_position();
-    LOG_WARN("Particle position: ({0}, {1})", p_position[0], p_position[1]);
     Shader color_shader("shaders/color.vertexShader", "shaders/color.fragmentShader");
     double last_time = glfwGetTime();
     int frames_count = 0;
@@ -69,11 +68,10 @@ int main()
 
         for (auto& particle : particles) {
             glm::vec2 direction = glm::normalize(glm::vec2({ 0.f, 0.f }) - particle.get_position());
-            particle.move_towards(direction, 1.f);
-            // particle.rotate_towards(10.f, { 0.f, 0.f, 1.f }, 1.f);
+            particle.move_towards(direction, 0.5f);
+            particle.rotate_around(10.f, { 0.f, 0.f, 1.f }, 0.5f);
             if (glm::distance(particle.get_position(), glm::vec2({ 0.f, 0.f })) < 0.01f)
-                particle.translate(particle.get_initial_position());
-            // particle.translate(particle.get_initial_position());
+                particle.translate(last_point);
             particle.update();
             particle.draw(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * particle.get_model_matrix());
         }
