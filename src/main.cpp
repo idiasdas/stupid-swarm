@@ -35,7 +35,6 @@ int main()
 
     axes_lines.buffer_vertices(buffer_lines);
     axes_lines.buffer_indices({ 0, 1, 2, 3, 4, 5 });
-
     std::vector<Particle> particles;
     int nb_circles = 100;
     float alpha = 0.0f;
@@ -47,7 +46,6 @@ int main()
     }
 
     Shader color_shader("shaders/color.vertexShader", "shaders/color.fragmentShader");
-
     double last_time = glfwGetTime();
     int frames_count = 0;
 
@@ -64,10 +62,19 @@ int main()
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::mat4 MVP = camera.get_projection_matrix() * camera.get_view_matrix() * axes_lines.get_model_matrix();
-        axes_lines.draw_lines(color_shader, MVP);
-        for (auto circle : particles)
-            circle.draw(color_shader, MVP);
+        axes_lines.draw_lines(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * axes_lines.get_model_matrix());
+
+        for (auto& particle : particles) {
+            // glm::vec2 direction = glm::normalize(glm::vec2({ 0.f, 0.f }) - particle.get_position());
+            // particle.move_towards(direction, 1.f);
+            particle.rotate_towards(10.f, { 0.f, 0.f, 1.f }, 1.f);
+            if (glm::distance(particle.get_position(), glm::vec2({ 0.f, 0.f })) < 0.01f)
+                particle.translate(particle.get_initial_position());
+            // particle.translate(particle.get_initial_position());
+            particle.update();
+            particle.draw(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * particle.get_model_matrix());
+        }
+
         glfwSwapBuffers(context.get_window_handle());
         glfwPollEvents();
 
