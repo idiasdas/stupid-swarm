@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 
-#include "circle.h"
 #include "log.h"
+#include "particle.hpp"
 #include "renderer/camera.h"
 #include "renderer/model.h"
 #include "renderer/opengl-context.h"
@@ -32,15 +32,16 @@ int main()
         0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
         0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 1.0f
     };
+
     axes_lines.buffer_vertices(buffer_lines);
     axes_lines.buffer_indices({ 0, 1, 2, 3, 4, 5 });
 
-    std::vector<Model> circles;
+    std::vector<Particle> particles;
     int nb_circles = 100;
     float alpha = 0.0f;
     float radius = 0.0f;
     for (int i = 0; i < nb_circles; i++) {
-        circles.push_back(create_circle({ radius * glm::cos(alpha), radius * glm::sin(alpha) }, 0.1f, { 1.0f, 0.0f, 0.0f }));
+        particles.push_back(Particle({ radius * glm::cos(alpha), radius * glm::sin(alpha) }, 0.1f, ParticleType::DRONE));
         radius += 0.1f;
         alpha += 2 * glm::pi<float>() / 24;
     }
@@ -63,9 +64,10 @@ int main()
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        axes_lines.draw_lines(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * axes_lines.get_model_matrix());
-        for (auto circle : circles)
-            circle.draw(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * axes_lines.get_model_matrix());
+        glm::mat4 MVP = camera.get_projection_matrix() * camera.get_view_matrix() * axes_lines.get_model_matrix();
+        axes_lines.draw_lines(color_shader, MVP);
+        for (auto circle : particles)
+            circle.draw(color_shader, MVP);
         glfwSwapBuffers(context.get_window_handle());
         glfwPollEvents();
 
