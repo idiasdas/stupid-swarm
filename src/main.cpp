@@ -45,6 +45,9 @@ int main()
         alpha += 2 * glm::pi<float>() / 24;
     }
 
+    Particle p({ 1.f, 1.f }, 0.4, ParticleType::OBSTACLE);
+    glm::vec2 p_position = p.get_position();
+    LOG_WARN("Particle position: ({0}, {1})", p_position[0], p_position[1]);
     Shader color_shader("shaders/color.vertexShader", "shaders/color.fragmentShader");
     double last_time = glfwGetTime();
     int frames_count = 0;
@@ -65,9 +68,9 @@ int main()
         axes_lines.draw_lines(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * axes_lines.get_model_matrix());
 
         for (auto& particle : particles) {
-            // glm::vec2 direction = glm::normalize(glm::vec2({ 0.f, 0.f }) - particle.get_position());
-            // particle.move_towards(direction, 1.f);
-            particle.rotate_towards(10.f, { 0.f, 0.f, 1.f }, 1.f);
+            glm::vec2 direction = glm::normalize(glm::vec2({ 0.f, 0.f }) - particle.get_position());
+            particle.move_towards(direction, 1.f);
+            // particle.rotate_towards(10.f, { 0.f, 0.f, 1.f }, 1.f);
             if (glm::distance(particle.get_position(), glm::vec2({ 0.f, 0.f })) < 0.01f)
                 particle.translate(particle.get_initial_position());
             // particle.translate(particle.get_initial_position());
