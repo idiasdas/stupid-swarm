@@ -13,7 +13,8 @@
 #define NB_SLICES 20
 
 Particle::Particle(glm::vec2 position, const float size, ParticleType type)
-    : m_initial_position(position)
+    : m_enabled(true)
+    , m_initial_position(position)
     , m_type(type)
     , m_last_update_time(glfwGetTime())
 {
@@ -64,11 +65,15 @@ Particle::Particle(glm::vec2 position, const float size, ParticleType type)
 
 void Particle::draw(const Shader& shader, const glm::mat4 MVP) const
 {
+    if (!m_enabled)
+        return;
     m_model.draw(shader, MVP);
 }
 
 void Particle::move_towards(glm::vec2 direction, float speed)
 {
+    if (!m_enabled)
+        return;
     double cur_time = glfwGetTime();
     double delta = cur_time - m_last_update_time;
     glm::vec2 movement = { delta * direction[0] * speed, delta * direction[1] * speed };
@@ -77,16 +82,22 @@ void Particle::move_towards(glm::vec2 direction, float speed)
 
 void Particle::translate(glm::vec2 position)
 {
+    if (!m_enabled)
+        return;
     m_model.translate({ position[0], position[1], 0.f });
 }
 
 void Particle::rotate(const float rotation_degree, const glm::vec3& rotation_axis)
 {
+    if (!m_enabled)
+        return;
     m_model.rotate(rotation_degree, rotation_axis);
 }
 
 void Particle::rotate_around(const float rotation_degree, const glm::vec3& rotation_axis, const float speed)
 {
+    if (!m_enabled)
+        return;
     double cur_time = glfwGetTime();
     double delta = cur_time - m_last_update_time;
     m_model.set_translation_matrix(glm::rotate(glm::mat4(1), (float)(rotation_degree * delta * speed), rotation_axis) * m_model.get_translation_matrix());
@@ -94,6 +105,8 @@ void Particle::rotate_around(const float rotation_degree, const glm::vec3& rotat
 
 void Particle::update()
 {
+    if (!m_enabled)
+        return;
     m_last_update_time = glfwGetTime();
 }
 

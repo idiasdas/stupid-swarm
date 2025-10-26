@@ -1,4 +1,5 @@
 #include <glad/glad.h>
+#include <random>
 
 #include "log.h"
 #include "particle.hpp"
@@ -24,6 +25,10 @@ int main()
 
     Model axes_lines;
 
+    std::random_device rd; // Will be used to obtain a seed for the random number engine
+    std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
+    std::uniform_real_distribution<> dis(-1.f, 1.f);
+
     std::vector<float> buffer_lines = {
         0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
         10.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
@@ -36,21 +41,21 @@ int main()
     axes_lines.buffer_vertices(buffer_lines);
     axes_lines.buffer_indices({ 0, 1, 2, 3, 4, 5 });
     std::vector<Particle> particles;
-    int nb_circles = 100;
+    int nb_circles = 10000;
     float alpha = 0.0f;
     float radius = 0.0f;
-    glm::vec2 last_point;
     for (int i = 0; i < nb_circles; i++) {
         particles.push_back(Particle({ radius * glm::cos(alpha), radius * glm::sin(alpha) }, 0.1f, ParticleType::DRONE));
-        radius += 0.1f;
-        alpha += 2 * glm::pi<float>() / 24;
-        last_point = { radius * glm::cos(alpha), radius * glm::sin(alpha) };
+        radius += 0.001f;
+        alpha += 2 * glm::pi<float>() / 180;
     }
+    Particle goal({ 10.f, 10.f }, 0.4f, ParticleType::GOAL);
 
     Shader color_shader("shaders/color.vertexShader", "shaders/color.fragmentShader");
     double last_time = glfwGetTime();
     int frames_count = 0;
 
+    glm::vec2 goal_direction = { -1.f, -1.f };
     do {
         frames_count++;
         double cur_time = glfwGetTime();
@@ -66,12 +71,22 @@ int main()
 
         axes_lines.draw_lines(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * axes_lines.get_model_matrix());
 
+        if (glm::distance(goal.get_position(), { 0.f, 0.f }) >= 10.f)
+            goal_direction = glm::normalize(glm::vec2({ 0.f, 0.f }) - goal.get_position());
+
+        goal.move_towards(goal_direction, 5.f);
+        goal.rotate_around(1.f, { 0.f, 0.f, 1.f }, 0.2f);
+        goal.update();
+
+        goal.draw(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * goal.get_model_matrix());
         for (auto& particle : particles) {
-            glm::vec2 direction = glm::normalize(glm::vec2({ 0.f, 0.f }) - particle.get_position());
-            particle.move_towards(direction, 0.5f);
-            particle.rotate_around(10.f, { 0.f, 0.f, 1.f }, 0.5f);
-            if (glm::distance(particle.get_position(), glm::vec2({ 0.f, 0.f })) < 0.01f)
-                particle.translate(last_point);
+            glm::vec2 direction = glm::normalize(goal.get_position() - particle.get_position());
+            particle.move_towards(direction, 2.f);
+            // particle.rotate_around(10.f, { 0.f, 0.f, 1.f }, 0.5f);
+            if (glm::distance(particle.get_position(), goal.get_position()) < 0.4f) {
+                particle.kill();
+                LOG_INFO("KILL");
+            }
             particle.update();
             particle.draw(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * particle.get_model_matrix());
         }

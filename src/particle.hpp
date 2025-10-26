@@ -18,12 +18,14 @@ public:
     void move_towards(glm::vec2 direction, float speed);
     void rotate(const float rotation_degree, const glm::vec3& rotation_axis);
     void rotate_around(const float rotation_degree, const glm::vec3& rotation_axis, const float speed);
+    void kill() { m_enabled = false; }
     glm::mat4 get_model_matrix() const { return m_model.get_model_matrix(); }
     glm::vec2 get_position() const;
     glm::vec2 get_initial_position() const { return m_initial_position; }
     void update();
 
 private:
+    bool m_enabled;
     Model m_model;
     glm::vec2 m_initial_position;
     ParticleType m_type;
