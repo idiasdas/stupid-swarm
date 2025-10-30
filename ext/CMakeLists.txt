@@ -11,4 +11,5 @@ set(GLFW_BUILD_WAYLAND OFF)
 add_subdirectory(glfw)
 add_subdirectory(glm)
 add_subdirectory(spdlog)
+add_subdirectory(imgui)
 
