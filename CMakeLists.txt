@@ -10,6 +10,7 @@ set(include_directories
     ext/glm
     ext/spdlog/include
     ext/imgui
+    ext/imgui/backends
     src
 )
 
@@ -18,7 +19,6 @@ set(libraries
     glfw
     glm::glm
     spdlog::spdlog
-    imgui
 )
 
 project(${project_target})
@@ -30,7 +30,9 @@ add_subdirectory(ext)
 
 file(GLOB_RECURSE executable_sources "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
-add_executable(stupid-swarm ${executable_sources})
+message(" [INFO] Imgui source files: ${IMGUI_SOURCE_FILES}")
+message(" [INFO] Imgui headers: ${IMGUI_HEADERS}")
+add_executable(stupid-swarm ${executable_sources} ${IMGUI_SOURCE_FILES} ${IMGUI_HEADERS})
 
 file(RELATIVE_PATH relative ${CMAKE_BINARY_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/utils/")
 message(" [INFO] The relative path between build and utils is:\n\t - ${relative}")

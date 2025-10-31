@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 #include <random>
 
+#include "custom_imgui.hpp"
 #include "log.h"
 #include "particle.hpp"
 #include "renderer/camera.h"
@@ -24,6 +25,8 @@ int main()
     g_camera = &camera;
 
     Model axes_lines;
+    CustomImgui gui;
+    gui.init(context.get_window_handle());
 
     std::random_device rd; // Will be used to obtain a seed for the random number engine
     std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
@@ -74,10 +77,11 @@ int main()
         if (glm::distance(goal.get_position(), { 0.f, 0.f }) >= 10.f)
             goal_direction = glm::normalize(glm::vec2({ 0.f, 0.f }) - goal.get_position());
 
+        gui.update();
+        gui.draw();
         goal.move_towards(goal_direction, 5.f);
         goal.rotate_around(1.f, { 0.f, 0.f, 1.f }, 0.2f);
         goal.update();
-
         goal.draw(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * goal.get_model_matrix());
         for (auto& particle : particles) {
             glm::vec2 direction = glm::normalize(goal.get_position() - particle.get_position());
@@ -96,6 +100,7 @@ int main()
 
     } while (glfwGetKey(context.get_window_handle(), GLFW_KEY_Q) != GLFW_PRESS && glfwWindowShouldClose(context.get_window_handle()) == 0);
 
+    gui.shutdown();
     glfwTerminate();
 
     return 0;
