@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 #include <random>
 
-#include "custom_imgui.hpp"
+#include "imgui/custom_imgui.hpp"
 #include "log.h"
 #include "particle.hpp"
 #include "renderer/camera.h"
@@ -13,7 +13,8 @@ Camera* g_camera = nullptr;
 void event_manager(Event& event)
 {
     g_camera->on_event(event);
-    LOG_INFO(event.to_string());
+    if (event.get_event_type() != EventType::mouse_move)
+        LOG_INFO(event.to_string());
 }
 
 int main()
@@ -77,8 +78,6 @@ int main()
         if (glm::distance(goal.get_position(), { 0.f, 0.f }) >= 10.f)
             goal_direction = glm::normalize(glm::vec2({ 0.f, 0.f }) - goal.get_position());
 
-        gui.update();
-        gui.draw();
         goal.move_towards(goal_direction, 5.f);
         goal.rotate_around(1.f, { 0.f, 0.f, 1.f }, 0.2f);
         goal.update();
@@ -94,6 +93,9 @@ int main()
             particle.update();
             particle.draw(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * particle.get_model_matrix());
         }
+
+        gui.update();
+        gui.draw();
 
         glfwSwapBuffers(context.get_window_handle());
         glfwPollEvents();
