@@ -1,7 +1,10 @@
 #include "custom_imgui.hpp"
+#include "imgui.h"
 
-void CustomImgui::init(GLFWwindow* window)
+CustomImgui::CustomImgui(GLFWwindow* window, OpenGLContext* context)
 {
+    _is_open = true;
+    _context = context;
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -16,12 +19,27 @@ void CustomImgui::init(GLFWwindow* window)
     ImGui_ImplOpenGL3_Init("#version 430");
 }
 
-void CustomImgui::update()
+void CustomImgui::new_frame()
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-    ImGui::ShowDemoWindow();
+
+    // Enable docking
+    ImGuiIO& io = ImGui::GetIO();
+    ImGuiDockNodeFlags dockspace_flags = 0 | ImGuiDockNodeFlags_PassthruCentralNode;
+    ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), dockspace_flags);
+    io.DisplaySize = ImVec2(_context->get_window_width(), _context->get_window_height());
+    glViewport(0, 0, _context->get_window_width(), _context->get_window_height());
+}
+
+void CustomImgui::update()
+{
+    // ImGui::ShowDemoWindow();
+    if (_is_open)
+        ImGui::Begin("Hello, World!", &_is_open, ImGuiWindowFlags_MenuBar);
+
+    ImGui::End();
 }
 
 void CustomImgui::draw()

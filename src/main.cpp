@@ -26,8 +26,7 @@ int main()
     g_camera = &camera;
 
     Model axes_lines;
-    CustomImgui gui;
-    gui.init(context.get_window_handle());
+    CustomImgui gui(context.get_window_handle(), &context);
 
     std::random_device rd; // Will be used to obtain a seed for the random number engine
     std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
@@ -94,6 +93,7 @@ int main()
             particle.draw(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * particle.get_model_matrix());
         }
 
+        gui.new_frame();
         gui.update();
         gui.draw();
 
