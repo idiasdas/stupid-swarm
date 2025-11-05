@@ -85,7 +85,7 @@ int main()
             glm::vec2 direction = glm::normalize(goal.get_position() - particle.get_position());
             particle.move_towards(direction, 2.f);
             // particle.rotate_around(10.f, { 0.f, 0.f, 1.f }, 0.5f);
-            if (glm::distance(particle.get_position(), goal.get_position()) < 0.4f) {
+            if (particle.is_enabled() && glm::distance(particle.get_position(), goal.get_position()) < 0.4f) {
                 particle.kill();
                 LOG_INFO("KILL");
             }

@@ -37,3 +37,13 @@ make
 ```bash
 ./stupid-swarm
 ```
+
+
+# TODO
+
+- [ ] Particles color picking
+- [ ] Start/Pause/Reset button
+- [ ] Goal follow mouse
+- [ ] FPS plot
+- [ ] LOG window
+- [ ] Particles number slider

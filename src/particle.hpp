@@ -22,6 +22,7 @@ public:
     glm::mat4 get_model_matrix() const { return m_model.get_model_matrix(); }
     glm::vec2 get_position() const;
     glm::vec2 get_initial_position() const { return m_initial_position; }
+    bool is_enabled() { return m_enabled; }
     void update();
 
 private:

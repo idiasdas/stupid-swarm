@@ -15,5 +15,6 @@ public:
 
 private:
     bool _is_open;
+    bool _checkbox;
     OpenGLContext* _context;
 };
