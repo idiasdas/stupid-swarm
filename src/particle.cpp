@@ -17,6 +17,7 @@ Particle::Particle(glm::vec2 position, const float size, ParticleType type)
     , m_initial_position(position)
     , m_type(type)
     , m_last_update_time(glfwGetTime())
+    , m_size(size)
 {
     glm::vec3 color;
     switch (type) {
