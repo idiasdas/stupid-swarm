@@ -6,7 +6,6 @@ CustomImgui::CustomImgui(GLFWwindow* window, OpenGLContext* context)
 {
     _is_open = true;
     _context = context;
-    _checkbox = false;
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -37,16 +36,10 @@ void CustomImgui::new_frame()
 
 void CustomImgui::update()
 {
-    float slider_float2 = 1.f;
     ImGui::ShowDemoWindow();
     if (_is_open) {
         ImGui::Begin("Hello, World!", &_is_open, ImGuiWindowFlags_MenuBar);
-        if (ImGui::Button("Reset"))
-            LOG_INFO("Reset button pressed");
-        ImGui::Checkbox("Check", &_checkbox);
-        ImGui::SliderFloat("Slider float 2", &slider_float2, 0.5f, 2.f);
     }
-
     ImGui::End();
 }
 
