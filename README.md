@@ -41,9 +41,13 @@ make
 
 # TODO
 
+1. Moving Goal Simulation
 - [ ] Particles color picking
-- [ ] Start/Pause/Reset button
+- [x] Start/Pause button
+- [ ] Reset button
 - [ ] Goal follow mouse
 - [ ] FPS plot
 - [ ] LOG window
-- [ ] Particles number slider
+- [x] Particles number slider
+
+2. Eletric forces simulation
