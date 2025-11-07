@@ -13,25 +13,25 @@ class Particle {
 
 public:
     Particle(glm::vec2 position, const float size, ParticleType type);
-    void draw(const Shader& shader, const glm::mat4 MVP) const;
-    void translate(glm::vec2 position);
-    void move_towards(glm::vec2 direction, float speed);
-    void rotate(const float rotation_degree, const glm::vec3& rotation_axis);
-    void rotate_around(const float rotation_degree, const glm::vec3& rotation_axis, const float speed);
-    void kill() { m_enabled = false; }
-    void enable() { m_enabled = true; }
-    glm::mat4 get_model_matrix() const { return m_model.GetModelMatrix(); }
-    glm::vec2 get_position() const;
-    glm::vec2 get_initial_position() const { return m_initial_position; }
-    bool is_enabled() { return m_enabled; }
-    void update();
-    float get_size() { return m_size; }
+    void Draw(const Shader& shader, const glm::mat4 MVP) const;
+    void Translate(glm::vec2 position);
+    void MoveTowards(glm::vec2 direction, float speed);
+    void Rotate(const float rotationDegree, const glm::vec3& rotationAxis);
+    void RotateAround(const float rotationDegree, const glm::vec3& rotationAxis, const float speed);
+    void Kill() { _enabled = false; }
+    void Enable() { _enabled = true; }
+    glm::mat4 GetModelMatrix() const { return _model.GetModelMatrix(); }
+    glm::vec2 GetPosition() const;
+    glm::vec2 GetInitialPosition() const { return _initialPosition; }
+    bool IsEnabled() { return _enabled; }
+    void Update();
+    float GetSize() { return _size; }
 
 private:
-    bool m_enabled;
-    Model m_model;
-    float m_size;
-    glm::vec2 m_initial_position;
-    ParticleType m_type;
-    double m_last_update_time;
+    bool _enabled;
+    Model _model;
+    float _size;
+    glm::vec2 _initialPosition;
+    ParticleType _type;
+    double _lastUpdateTime;
 };
