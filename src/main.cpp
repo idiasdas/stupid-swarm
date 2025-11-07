@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 #include <random>
 
-#include "imgui/custom_imgui.hpp"
+#include "imgui/swarm_settings_imgui.hpp"
 #include "log.h"
 #include "particle.hpp"
 #include "renderer/camera.h"
@@ -26,7 +26,8 @@ int main()
     g_camera = &camera;
 
     Model axes_lines;
-    CustomImgui gui(context.get_window_handle(), &context);
+    SwarmSettingsImgui gui(context.get_window_handle(), &context);
+    gui.set_nb_particles(10000);
 
     std::random_device rd; // Will be used to obtain a seed for the random number engine
     std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
@@ -57,6 +58,7 @@ int main()
     Shader color_shader("shaders/color.vertexShader", "shaders/color.fragmentShader");
     double last_time = glfwGetTime();
     int frames_count = 0;
+    int nb_particles_alive = 0;
 
     glm::vec2 goal_direction = { -1.f, -1.f };
     do {
@@ -74,21 +76,52 @@ int main()
 
         axes_lines.draw_lines(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * axes_lines.get_model_matrix());
 
-        if (glm::distance(goal.get_position(), { 0.f, 0.f }) >= 10.f)
-            goal_direction = glm::normalize(glm::vec2({ 0.f, 0.f }) - goal.get_position());
+        if (!gui.is_paused()) {
+            if (glm::distance(goal.get_position(), { 0.f, 0.f }) >= 10.f)
+                goal_direction = glm::normalize(glm::vec2({ 0.f, 0.f }) - goal.get_position());
 
-        goal.move_towards(goal_direction, 5.f);
-        goal.rotate_around(1.f, { 0.f, 0.f, 1.f }, 0.2f);
+            goal.move_towards(goal_direction, 5.f);
+            goal.rotate_around(1.f, { 0.f, 0.f, 1.f }, 0.2f);
+            for (auto& particle : particles) {
+                glm::vec2 direction = glm::normalize(goal.get_position() - particle.get_position());
+                particle.move_towards(direction, 2.f);
+                // particle.rotate_around(10.f, { 0.f, 0.f, 1.f }, 0.5f);
+                if (particle.is_enabled() && glm::distance(particle.get_position(), goal.get_position()) < goal.get_size()) {
+                    particle.kill();
+                    gui.set_nb_particles(gui.get_nb_particles() - 1);
+                    LOG_INFO("KILL");
+                }
+            }
+        }
+
+        nb_particles_alive = 0;
+        for (auto& particle : particles) {
+            if (particle.is_enabled())
+                nb_particles_alive++;
+        }
+
+        auto it = particles.begin();
+        while (it != particles.end() && nb_particles_alive != gui.get_nb_particles()) {
+            if (nb_particles_alive < gui.get_nb_particles() && !(*it).is_enabled()) {
+                (*it).enable();
+                nb_particles_alive++;
+            } else if (nb_particles_alive > gui.get_nb_particles() && (*it).is_enabled()) {
+                (*it).kill();
+                nb_particles_alive--;
+            }
+            it++;
+        }
+
+        // for (int i = 0; i < particles.size(); i++) {
+        //     if (i < gui.get_nb_particles())
+        //         particles[i].enable();
+        //     else
+        //         particles[i].kill();
+        // }
+
         goal.update();
         goal.draw(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * goal.get_model_matrix());
         for (auto& particle : particles) {
-            glm::vec2 direction = glm::normalize(goal.get_position() - particle.get_position());
-            particle.move_towards(direction, 2.f);
-            // particle.rotate_around(10.f, { 0.f, 0.f, 1.f }, 0.5f);
-            if (particle.is_enabled() && glm::distance(particle.get_position(), goal.get_position()) < 0.4f) {
-                particle.kill();
-                LOG_INFO("KILL");
-            }
             particle.update();
             particle.draw(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * particle.get_model_matrix());
         }
