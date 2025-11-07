@@ -12,31 +12,31 @@ class Model {
 public:
     Model();
 
-    void buffer_vertices(const std::vector<float>& buffer);
-    void update_buffer_vertices(const std::vector<float>& buffer);
-    void buffer_indices(const std::vector<uint32_t>& buffer);
-    void draw(const Shader& shader, const glm::mat4 MVP) const;
-    void draw_lines(const Shader& shader, const glm::mat4 MVP) const;
-    void scale(const glm::vec3& scale_vector);
-    void rotate(const float rotation_degree, const glm::vec3& rotation_axis);
-    void translate(const glm::vec3& translation_vector);
-    void set_scale_matrix(const glm::mat4& scale_matrix) { m_scale_matrix = scale_matrix; }
-    void set_rotation_matrix(const glm::mat4& rotation_matrix) { m_rotation_matrix = rotation_matrix; }
-    void set_translation_matrix(const glm::mat4& translation_matrix) { m_translation_matrix = translation_matrix; }
+    void BufferVertices(const std::vector<float>& buffer);
+    void UpdateBufferVertices(const std::vector<float>& buffer);
+    void BufferIndices(const std::vector<uint32_t>& buffer);
+    void Draw(const Shader& shader, const glm::mat4 MVP) const;
+    void DrawLines(const Shader& shader, const glm::mat4 MVP) const;
+    void Scale(const glm::vec3& scaleVector);
+    void Rotate(const float rotationDegree, const glm::vec3& rotationAxis);
+    void Translate(const glm::vec3& translationVector);
+    void SetScaleMatrix(const glm::mat4& scaleMatrix) { _scaleMatrix = scaleMatrix; }
+    void SetRotationMatrix(const glm::mat4& rotationMatrix) { _rotationMatrix = rotationMatrix; }
+    void SetTranslationMatrix(const glm::mat4& translationMatrix) { _translationMatrix = translationMatrix; }
 
-    glm::mat4 get_scale_matrix() const { return m_scale_matrix; }
-    glm::mat4 get_rotation_matrix() const { return m_rotation_matrix; }
-    glm::mat4 get_translation_matrix() const { return m_translation_matrix; }
-    glm::mat4 get_model_matrix() const { return m_translation_matrix * m_rotation_matrix * m_scale_matrix; }
+    glm::mat4 GetScaleMatrix() const { return _scaleMatrix; }
+    glm::mat4 GetRotationMatrix() const { return _rotationMatrix; }
+    glm::mat4 GetTranslationMatrix() const { return _translationMatrix; }
+    glm::mat4 GetModelMatrix() const { return _translationMatrix * _rotationMatrix * _scaleMatrix; }
 
 private:
-    uint32_t m_vertex_array_ID;
-    uint32_t m_vertex_buffer_ID;
-    uint32_t m_index_buffer_ID;
+    uint32_t _vertexArrayID;
+    uint32_t _vertexBufferID;
+    uint32_t _indexBufferID;
 
-    uint32_t m_indices_count;
+    uint32_t _indicesCount;
 
-    glm::mat4 m_scale_matrix;
-    glm::mat4 m_rotation_matrix;
-    glm::mat4 m_translation_matrix;
+    glm::mat4 _scaleMatrix;
+    glm::mat4 _rotationMatrix;
+    glm::mat4 _translationMatrix;
 };

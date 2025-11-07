@@ -8,12 +8,12 @@
 class CustomImgui {
 public:
     CustomImgui(GLFWwindow* window, OpenGLContext* context);
-    void new_frame();
-    virtual void update();
-    void draw();
-    void shutdown();
+    void NewFrame();
+    virtual void Update();
+    void Draw();
+    void Shutdown();
 
 protected:
-    bool _is_open;
+    bool _isOpen;
     OpenGLContext* _context;
 };

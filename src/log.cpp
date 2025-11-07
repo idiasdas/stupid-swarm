@@ -1,10 +1,10 @@
 #include "log.h"
 
-std::shared_ptr<spdlog::logger> Log::s_logger;
+std::shared_ptr<spdlog::logger> Log::_logger;
 
-void Log::init()
+void Log::Init()
 {
     spdlog::set_pattern("[%l]:%$ %v");
-    s_logger = spdlog::stdout_color_mt("Logger");
-    s_logger->set_level(spdlog::level::trace);
+    _logger = spdlog::stdout_color_mt("Logger");
+    _logger->set_level(spdlog::level::trace);
 }

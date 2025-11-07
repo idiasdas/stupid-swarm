@@ -2,77 +2,77 @@
 
 #define PI glm::pi<float>()
 
-Camera::Camera(OpenGLContext* const openGL_context)
+Camera::Camera(OpenGLContext* const openGLContext)
 {
-    m_OpenGL_context = openGL_context;
-    m_horizontal_angle = 0.0f;
-    m_vertical_angle = 0.0f;
-    m_radius = 15.0f;
-    m_FoV = 45.0f;
-    m_position = glm::vec3(0.f, 0.f, 15.f);
-    float aspect = (float)openGL_context->get_window_width() / (float)openGL_context->get_window_height();
-    m_projection_matrix = glm::perspective(glm::radians(m_FoV), aspect, 0.1f, 120.0f);
-    m_mouse_sensitivity = 0.005f;
-    spherical_move(0, 0, 0);
+    _openGLContext = openGLContext;
+    _horizontalAngle = 0.0f;
+    _verticalAngle = 0.0f;
+    _radius = 15.0f;
+    _FoV = 45.0f;
+    _position = glm::vec3(0.f, 0.f, 15.f);
+    float aspect = (float)openGLContext->GetWindowWidth() / (float)openGLContext->GetWindowHeight();
+    _projectionMatrix = glm::perspective(glm::radians(_FoV), aspect, 0.1f, 120.0f);
+    _mouseSensitivity = 0.005f;
+    SphericalMove(0, 0, 0);
 }
 
-void Camera::on_event(Event& event)
+void Camera::OnEvent(Event& event)
 {
-    static CameraState s_state = CameraState::wait_input;
-    static float s_mouse_xpos = 0.0f;
-    static float s_mouse_ypos = 0.0f;
+    static CameraState sState = CameraState::WAITINPUT;
+    static float sMouseXPos = 0.0f;
+    static float sMouseYPos = 0.0f;
 
-    if (event.get_event_type() == EventType::mouse_move) {
-        if (s_state == CameraState::move) {
-            float xpos = ((MouseMoveEvent*)&event)->get_x();
-            float ypos = ((MouseMoveEvent*)&event)->get_y();
-            spherical_move(m_mouse_sensitivity * (s_mouse_xpos - xpos), -m_mouse_sensitivity * (s_mouse_ypos - ypos), 0);
-            s_mouse_xpos = xpos;
-            s_mouse_ypos = ypos;
+    if (event.GetEventType() == EventType::MOUSE_MOVE) {
+        if (sState == CameraState::MOVE) {
+            float xPos = ((MouseMoveEvent*)&event)->GetX();
+            float yPos = ((MouseMoveEvent*)&event)->GetY();
+            SphericalMove(_mouseSensitivity * (sMouseXPos - xPos), -_mouseSensitivity * (sMouseYPos - yPos), 0);
+            sMouseXPos = xPos;
+            sMouseYPos = yPos;
         }
-    } else if (event.get_event_type() == EventType::mouse_button_release) {
-        s_state = CameraState::wait_input;
-    } else if (event.get_event_type() == EventType::mouse_button_press) {
-        if (((MouseButtonPressEvent*)&event)->get_button() == GLFW_MOUSE_BUTTON_2) {
-            s_state = CameraState::move;
-            s_mouse_xpos = ((MouseButtonPressEvent*)&event)->get_xpos();
-            s_mouse_ypos = ((MouseButtonPressEvent*)&event)->get_ypos();
+    } else if (event.GetEventType() == EventType::MOUSE_BUTTON_RELEASE) {
+        sState = CameraState::WAITINPUT;
+    } else if (event.GetEventType() == EventType::MOUSE_BUTTON_PRESS) {
+        if (((MouseButtonPressEvent*)&event)->GetButton() == GLFW_MOUSE_BUTTON_2) {
+            sState = CameraState::MOVE;
+            sMouseXPos = ((MouseButtonPressEvent*)&event)->GetXPos();
+            sMouseYPos = ((MouseButtonPressEvent*)&event)->GetYPos();
         }
-    } else if (event.get_event_type() == EventType::mouse_scroll) {
-        spherical_move(0, 0, -((MouseScrollEvent*)&event)->get_yoffset());
-    } else if (event.get_event_type() == EventType::window_resize) {
-        float aspect = (float)m_OpenGL_context->get_window_width() / (float)m_OpenGL_context->get_window_height();
-        m_projection_matrix = glm::perspective(glm::radians(m_FoV), aspect, 0.1f, 120.0f);
+    } else if (event.GetEventType() == EventType::MOUSE_SCROLL) {
+        SphericalMove(0, 0, -((MouseScrollEvent*)&event)->GetYOffset());
+    } else if (event.GetEventType() == EventType::WINDOW_RESIZE) {
+        float aspect = (float)_openGLContext->GetWindowWidth() / (float)_openGLContext->GetWindowHeight();
+        _projectionMatrix = glm::perspective(glm::radians(_FoV), aspect, 0.1f, 120.0f);
     }
 }
 
-void Camera::spherical_move(double horizontal_move, double vertical_move, double radius_move)
+void Camera::SphericalMove(double horizontalMove, double verticalMove, double radiusMove)
 {
-    m_horizontal_angle += horizontal_move;
-    m_vertical_angle += vertical_move;
-    m_radius += 2 * radius_move;
-    m_vertical_angle = std::min(m_vertical_angle, PI / 2.f);
-    m_vertical_angle = std::max(m_vertical_angle, -PI / 2.f);
+    _horizontalAngle += horizontalMove;
+    _verticalAngle += verticalMove;
+    _radius += 2 * radiusMove;
+    _verticalAngle = std::min(_verticalAngle, PI / 2.f);
+    _verticalAngle = std::max(_verticalAngle, -PI / 2.f);
 
-    if (m_radius < 10.f)
-        m_radius = 10.f;
-    else if (m_radius > 100.f)
-        m_radius = 100.f;
+    if (_radius < 10.f)
+        _radius = 10.f;
+    else if (_radius > 100.f)
+        _radius = 100.f;
 
-    m_position = glm::vec3(m_radius * cos(m_vertical_angle) * sin(m_horizontal_angle),
-        m_radius * sin(m_vertical_angle),
-        m_radius * cos(m_vertical_angle) * cos(m_horizontal_angle));
+    _position = glm::vec3(_radius * cos(_verticalAngle) * sin(_horizontalAngle),
+        _radius * sin(_verticalAngle),
+        _radius * cos(_verticalAngle) * cos(_horizontalAngle));
 
     glm::vec3 right = glm::vec3(
-        sin(m_horizontal_angle - PI / 2.0f),
+        sin(_horizontalAngle - PI / 2.0f),
         0,
-        cos(m_horizontal_angle - PI / 2.0f));
+        cos(_horizontalAngle - PI / 2.0f));
 
-    glm::vec3 up = glm::cross(right, glm::normalize(m_position));
+    glm::vec3 up = glm::cross(right, glm::normalize(_position));
 
-    m_view_matrix = glm::lookAt(
-        m_position, // Camera is here
-        -m_position, // and looks towards the origin
+    _viewMatrix = glm::lookAt(
+        _position, // Camera is here
+        -_position, // and looks towards the origin
         up // Head is up
     );
 }

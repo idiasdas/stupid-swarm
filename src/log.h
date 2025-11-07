@@ -6,17 +6,17 @@
 
 class Log {
 public:
-    static void init();
+    static void Init();
 
-    inline static std::shared_ptr<spdlog::logger>& get_logger() { return s_logger; }
+    inline static std::shared_ptr<spdlog::logger>& GetLogger() { return _logger; }
 
 private:
-    static std::shared_ptr<spdlog::logger> s_logger;
+    static std::shared_ptr<spdlog::logger> _logger;
 };
 
 // Core log macros
-#define LOG_TRACE(...) Log::get_logger()->trace(__VA_ARGS__)
-#define LOG_INFO(...) Log::get_logger()->info(__VA_ARGS__)
-#define LOG_WARN(...) Log::get_logger()->warn(__VA_ARGS__)
-#define LOG_ERROR(...) Log::get_logger()->error(__VA_ARGS__)
-#define LOG_FATAL(...) Log::get_logger()->fatal(__VA_ARGS__)
+#define LOG_TRACE(...) Log::GetLogger()->trace(__VA_ARGS__)
+#define LOG_INFO(...) Log::GetLogger()->info(__VA_ARGS__)
+#define LOG_WARN(...) Log::GetLogger()->warn(__VA_ARGS__)
+#define LOG_ERROR(...) Log::GetLogger()->error(__VA_ARGS__)
+#define LOG_FATAL(...) Log::GetLogger()->fatal(__VA_ARGS__)

@@ -4,7 +4,7 @@
 
 CustomImgui::CustomImgui(GLFWwindow* window, OpenGLContext* context)
 {
-    _is_open = true;
+    _isOpen = true;
     _context = context;
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -20,7 +20,7 @@ CustomImgui::CustomImgui(GLFWwindow* window, OpenGLContext* context)
     ImGui_ImplOpenGL3_Init("#version 430");
 }
 
-void CustomImgui::new_frame()
+void CustomImgui::NewFrame()
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -30,26 +30,26 @@ void CustomImgui::new_frame()
     ImGuiIO& io = ImGui::GetIO();
     ImGuiDockNodeFlags dockspace_flags = 0 | ImGuiDockNodeFlags_PassthruCentralNode;
     ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), dockspace_flags);
-    io.DisplaySize = ImVec2(_context->get_window_width(), _context->get_window_height());
-    glViewport(0, 0, _context->get_window_width(), _context->get_window_height());
+    io.DisplaySize = ImVec2(_context->GetWindowWidth(), _context->GetWindowHeight());
+    glViewport(0, 0, _context->GetWindowWidth(), _context->GetWindowHeight());
 }
 
-void CustomImgui::update()
+void CustomImgui::Update()
 {
     ImGui::ShowDemoWindow();
-    if (_is_open) {
-        ImGui::Begin("Hello, World!", &_is_open, ImGuiWindowFlags_MenuBar);
+    if (_isOpen) {
+        ImGui::Begin("Hello, World!", &_isOpen, ImGuiWindowFlags_MenuBar);
     }
     ImGui::End();
 }
 
-void CustomImgui::draw()
+void CustomImgui::Draw()
 {
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void CustomImgui::shutdown()
+void CustomImgui::Shutdown()
 {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();

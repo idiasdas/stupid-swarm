@@ -54,21 +54,21 @@ Particle::Particle(glm::vec2 position, const float size, ParticleType type)
         vertices_buffer.push_back(color[1]);
         vertices_buffer.push_back(color[2]);
     }
-    m_model.buffer_vertices(vertices_buffer);
+    m_model.BufferVertices(vertices_buffer);
 
     std::vector<uint32_t> indices_buffer;
     for (uint32_t i = 0; i < (uint32_t)vertices_buffer.size() / 6; i++) {
         indices_buffer.push_back(i);
     }
-    m_model.buffer_indices(indices_buffer);
-    m_model.translate({ position[0], position[1], 0.f });
+    m_model.BufferIndices(indices_buffer);
+    m_model.Translate({ position[0], position[1], 0.f });
 }
 
 void Particle::draw(const Shader& shader, const glm::mat4 MVP) const
 {
     if (!m_enabled)
         return;
-    m_model.draw(shader, MVP);
+    m_model.Draw(shader, MVP);
 }
 
 void Particle::move_towards(glm::vec2 direction, float speed)
@@ -78,21 +78,21 @@ void Particle::move_towards(glm::vec2 direction, float speed)
     double cur_time = glfwGetTime();
     double delta = cur_time - m_last_update_time;
     glm::vec2 movement = { delta * direction[0] * speed, delta * direction[1] * speed };
-    m_model.translate({ movement[0], movement[1], 0.f });
+    m_model.Translate({ movement[0], movement[1], 0.f });
 }
 
 void Particle::translate(glm::vec2 position)
 {
     if (!m_enabled)
         return;
-    m_model.translate({ position[0], position[1], 0.f });
+    m_model.Translate({ position[0], position[1], 0.f });
 }
 
 void Particle::rotate(const float rotation_degree, const glm::vec3& rotation_axis)
 {
     if (!m_enabled)
         return;
-    m_model.rotate(rotation_degree, rotation_axis);
+    m_model.Rotate(rotation_degree, rotation_axis);
 }
 
 void Particle::rotate_around(const float rotation_degree, const glm::vec3& rotation_axis, const float speed)
@@ -101,7 +101,7 @@ void Particle::rotate_around(const float rotation_degree, const glm::vec3& rotat
         return;
     double cur_time = glfwGetTime();
     double delta = cur_time - m_last_update_time;
-    m_model.set_translation_matrix(glm::rotate(glm::mat4(1), (float)(rotation_degree * delta * speed), rotation_axis) * m_model.get_translation_matrix());
+    m_model.SetTranslationMatrix(glm::rotate(glm::mat4(1), (float)(rotation_degree * delta * speed), rotation_axis) * m_model.GetTranslationMatrix());
 }
 
 void Particle::update()
@@ -113,5 +113,5 @@ void Particle::update()
 
 glm::vec2 Particle::get_position() const
 {
-    return glm::vec2(m_model.get_model_matrix()[3]);
+    return glm::vec2(m_model.GetModelMatrix()[3]);
 }

@@ -2,29 +2,30 @@
 
 #include <string>
 
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
 #include "events.h"
+#include "glad/glad.h"
+
+#include "GLFW/glfw3.h"
 
 class OpenGLContext {
 public:
-    OpenGLContext(const std::string& window_name, const int window_width, const int window_height, void (*func_event_manager)(Event& event));
+    OpenGLContext(const std::string& windowName, const int windowWidth, const int windowHeight, void (*funcEventManager)(Event& event));
 
-    inline std::string get_window_name() const { return m_window_name; }
-    inline int get_window_width() const { return m_window_width; }
-    inline int get_window_height() const { return m_window_height; }
-    inline void set_window_width(int window_width) { m_window_width = window_width; }
-    inline void set_window_height(int window_height) { m_window_height = window_height; }
-    inline GLFWwindow* get_window_handle() const { return m_window; }
-
-private:
-    void set_events_callbacks();
-    void run_event_manager(Event& event) const { m_func_event_manager(event); }
+    inline std::string GetWindowName() const { return _windowName; }
+    inline int GetWindowWidth() const { return _windowWidth; }
+    inline int GetWindowHeight() const { return _windowHeight; }
+    inline void SetWindowWidth(int windowWidth) { _windowWidth = windowWidth; }
+    inline void SetWindowHeight(int windowHeight) { _windowHeight = windowHeight; }
+    inline GLFWwindow* GetWindowHandle() const { return _window; }
 
 private:
-    GLFWwindow* m_window;
-    std::string m_window_name;
-    int m_window_width;
-    int m_window_height;
-    void (*m_func_event_manager)(Event& event);
+    void SetEventsCallbacks();
+    void RunEventManager(Event& event) const { _funcEventManager(event); }
+
+private:
+    GLFWwindow* _window;
+    std::string _windowName;
+    int _windowWidth;
+    int _windowHeight;
+    void (*_funcEventManager)(Event& event);
 };

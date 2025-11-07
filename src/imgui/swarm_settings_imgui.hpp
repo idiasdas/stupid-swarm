@@ -5,13 +5,13 @@
 class SwarmSettingsImgui : public CustomImgui {
 public:
     using CustomImgui::CustomImgui;
-    void update() override;
-    bool is_paused() { return _paused; }
-    void set_nb_particles(int nb_particles) { _nb_particles = (nb_particles > _max_nb_particles) ? _max_nb_particles : nb_particles; }
-    int get_nb_particles() { return _nb_particles; }
+    void Update() override;
+    bool IsPaused() { return _paused; }
+    void SetNbParticles(int nbParticles) { _nbParticles = (nbParticles > _maxNbParticles) ? _maxNbParticles : nbParticles; }
+    int GetNbParticles() { return _nbParticles; }
 
 private:
     bool _paused = true;
-    int _nb_particles;
-    int _max_nb_particles = 10000;
+    int _nbParticles;
+    int _maxNbParticles = 10000;
 };

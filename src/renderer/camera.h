@@ -1,7 +1,5 @@
 #pragma once
 
-#include <glad/glad.h> // Must be included before GLFW3
-#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -9,29 +7,29 @@
 #include "opengl-context.h"
 
 enum class CameraState {
-    wait_input,
-    move
+    WAITINPUT,
+    MOVE
 };
 
 class Camera {
 private:
-    OpenGLContext* m_OpenGL_context;
+    OpenGLContext* _openGLContext;
 
-    float m_horizontal_angle;
-    float m_vertical_angle;
-    float m_radius;
-    float m_FoV;
-    float m_mouse_sensitivity;
+    float _horizontalAngle;
+    float _verticalAngle;
+    float _radius;
+    float _FoV;
+    float _mouseSensitivity;
 
-    glm::mat4 m_view_matrix;
-    glm::mat4 m_projection_matrix;
-    glm::vec3 m_position;
+    glm::mat4 _viewMatrix;
+    glm::mat4 _projectionMatrix;
+    glm::vec3 _position;
 
 public:
-    Camera(OpenGLContext* const openGL_context);
-    glm::mat4 get_view_matrix() const { return m_view_matrix; }
-    glm::mat4 get_projection_matrix() const { return m_projection_matrix; }
-    glm::vec3 get_camera_position() const { return m_position; }
-    void on_event(Event& event);
-    void spherical_move(double theta_move, double phy_move, double radius_move);
+    Camera(OpenGLContext* const openGLContext);
+    glm::mat4 GetViewMatrix() const { return _viewMatrix; }
+    glm::mat4 GetProjectionMatrix() const { return _projectionMatrix; }
+    glm::vec3 GetCameraPosition() const { return _position; }
+    void OnEvent(Event& event);
+    void SphericalMove(double horizontalMove, double verticalMove, double radiusMove);
 };

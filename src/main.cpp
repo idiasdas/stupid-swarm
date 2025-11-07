@@ -9,25 +9,25 @@
 #include "renderer/opengl-context.h"
 #include "renderer/shader.h"
 
-Camera* g_camera = nullptr;
-void event_manager(Event& event)
+Camera* gCamera = nullptr;
+void EventManager(Event& event)
 {
-    g_camera->on_event(event);
-    if (event.get_event_type() != EventType::mouse_move)
-        LOG_INFO(event.to_string());
+    gCamera->OnEvent(event);
+    if (event.GetEventType() != EventType::MOUSE_MOVE)
+        LOG_INFO(event.ToString());
 }
 
 int main()
 {
-    Log::init();
-    OpenGLContext context("Stupid Swarm", 1280, 720, event_manager);
+    Log::Init();
+    OpenGLContext context("Stupid Swarm", 1280, 720, EventManager);
 
     Camera camera(&context);
-    g_camera = &camera;
+    gCamera = &camera;
 
     Model axes_lines;
-    SwarmSettingsImgui gui(context.get_window_handle(), &context);
-    gui.set_nb_particles(10000);
+    SwarmSettingsImgui gui(context.GetWindowHandle(), &context);
+    gui.SetNbParticles(10000);
 
     std::random_device rd; // Will be used to obtain a seed for the random number engine
     std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
@@ -42,8 +42,8 @@ int main()
         0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 1.0f
     };
 
-    axes_lines.buffer_vertices(buffer_lines);
-    axes_lines.buffer_indices({ 0, 1, 2, 3, 4, 5 });
+    axes_lines.BufferVertices(buffer_lines);
+    axes_lines.BufferIndices({ 0, 1, 2, 3, 4, 5 });
     std::vector<Particle> particles;
     int nb_circles = 10000;
     float alpha = 0.0f;
@@ -74,9 +74,9 @@ int main()
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        axes_lines.draw_lines(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * axes_lines.get_model_matrix());
+        axes_lines.DrawLines(color_shader, camera.GetProjectionMatrix() * camera.GetViewMatrix() * axes_lines.GetModelMatrix());
 
-        if (!gui.is_paused()) {
+        if (!gui.IsPaused()) {
             if (glm::distance(goal.get_position(), { 0.f, 0.f }) >= 10.f)
                 goal_direction = glm::normalize(glm::vec2({ 0.f, 0.f }) - goal.get_position());
 
@@ -88,7 +88,7 @@ int main()
                 // particle.rotate_around(10.f, { 0.f, 0.f, 1.f }, 0.5f);
                 if (particle.is_enabled() && glm::distance(particle.get_position(), goal.get_position()) < goal.get_size()) {
                     particle.kill();
-                    gui.set_nb_particles(gui.get_nb_particles() - 1);
+                    gui.SetNbParticles(gui.GetNbParticles() - 1);
                     LOG_INFO("KILL");
                 }
             }
@@ -101,11 +101,11 @@ int main()
         }
 
         auto it = particles.begin();
-        while (it != particles.end() && nb_particles_alive != gui.get_nb_particles()) {
-            if (nb_particles_alive < gui.get_nb_particles() && !(*it).is_enabled()) {
+        while (it != particles.end() && nb_particles_alive != gui.GetNbParticles()) {
+            if (nb_particles_alive < gui.GetNbParticles() && !(*it).is_enabled()) {
                 (*it).enable();
                 nb_particles_alive++;
-            } else if (nb_particles_alive > gui.get_nb_particles() && (*it).is_enabled()) {
+            } else if (nb_particles_alive > gui.GetNbParticles() && (*it).is_enabled()) {
                 (*it).kill();
                 nb_particles_alive--;
             }
@@ -120,22 +120,22 @@ int main()
         // }
 
         goal.update();
-        goal.draw(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * goal.get_model_matrix());
+        goal.draw(color_shader, camera.GetProjectionMatrix() * camera.GetViewMatrix() * goal.get_model_matrix());
         for (auto& particle : particles) {
             particle.update();
-            particle.draw(color_shader, camera.get_projection_matrix() * camera.get_view_matrix() * particle.get_model_matrix());
+            particle.draw(color_shader, camera.GetProjectionMatrix() * camera.GetViewMatrix() * particle.get_model_matrix());
         }
 
-        gui.new_frame();
-        gui.update();
-        gui.draw();
+        gui.NewFrame();
+        gui.Update();
+        gui.Draw();
 
-        glfwSwapBuffers(context.get_window_handle());
+        glfwSwapBuffers(context.GetWindowHandle());
         glfwPollEvents();
 
-    } while (glfwGetKey(context.get_window_handle(), GLFW_KEY_Q) != GLFW_PRESS && glfwWindowShouldClose(context.get_window_handle()) == 0);
+    } while (glfwGetKey(context.GetWindowHandle(), GLFW_KEY_Q) != GLFW_PRESS && glfwWindowShouldClose(context.GetWindowHandle()) == 0);
 
-    gui.shutdown();
+    gui.Shutdown();
     glfwTerminate();
 
     return 0;

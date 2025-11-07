@@ -6,219 +6,219 @@
 #include "glm/glm.hpp"
 
 enum class EventType {
-    none = 0,
-    window_close,
-    window_resize,
-    key_press,
-    key_release,
-    mouse_button_press,
-    mouse_button_release,
-    mouse_move,
-    mouse_scroll,
-    ray
+    NONE = 0,
+    WINDOW_CLOSE,
+    WINDOW_RESIZE,
+    KEY_PRESS,
+    KEY_RELEASE,
+    MOUSE_BUTTON_PRESS,
+    MOUSE_BUTTON_RELEASE,
+    MOUSE_MOVE,
+    MOUSE_SCROLL,
+    RAY
 };
 
-#define EVENT_CLASS_TYPE(type)                                     \
-    static EventType get_static_type() { return EventType::type; } \
-    virtual EventType get_event_type() const override { return get_static_type(); }
+#define EVENT_CLASS_TYPE(type)                                   \
+    static EventType GetStaticType() { return EventType::type; } \
+    virtual EventType GetEventType() const override { return GetStaticType(); }
 
 class Event {
 public:
-    virtual EventType get_event_type() const = 0;
-    virtual std::string to_string() const = 0;
+    virtual EventType GetEventType() const = 0;
+    virtual std::string ToString() const = 0;
 };
 
 class WindowCloseEvent : public Event {
 public:
     WindowCloseEvent() { }
 
-    std::string to_string() const override
+    std::string ToString() const override
     {
         std::stringstream ss;
         ss << "WindowCloseEvent";
         return ss.str();
     }
 
-    EVENT_CLASS_TYPE(window_close)
+    EVENT_CLASS_TYPE(WINDOW_CLOSE)
 };
 
 class WindowResizeEvent : public Event {
 public:
     WindowResizeEvent(int width, int heigth)
-        : m_width(width)
-        , m_height(heigth)
+        : _width(width)
+        , _height(heigth)
     {
     }
 
-    inline int get_width() const { return m_width; }
-    inline int get_height() const { return m_height; }
+    inline int GetWidth() const { return _width; }
+    inline int GetHeight() const { return _height; }
 
-    std::string to_string() const override
+    std::string ToString() const override
     {
         std::stringstream ss;
-        ss << "WindowResizeEvent (" << m_width << ", " << m_height << ")";
+        ss << "WindowResizeEvent (" << _width << ", " << _height << ")";
         return ss.str();
     }
-    EVENT_CLASS_TYPE(window_resize)
+    EVENT_CLASS_TYPE(WINDOW_RESIZE)
 
 private:
-    int m_width, m_height;
+    int _width, _height;
 };
 
 class KeyPressEvent : public Event {
 public:
     KeyPressEvent(int key)
-        : m_key(key)
+        : _key(key)
     {
     }
 
-    inline int get_key() const { return m_key; }
+    inline int GetKey() const { return _key; }
 
-    std::string to_string() const override
+    std::string ToString() const override
     {
         std::stringstream ss;
-        ss << "KeyPressEvent (" << m_key << ")";
+        ss << "KeyPressEvent (" << _key << ")";
         return ss.str();
     }
-    EVENT_CLASS_TYPE(key_press)
+    EVENT_CLASS_TYPE(KEY_PRESS)
 
 private:
-    int m_key;
+    int _key;
 };
 
 class KeyReleaseEvent : public Event {
 public:
     KeyReleaseEvent(int key)
-        : m_key(key)
+        : _key(key)
     {
     }
 
-    inline int get_key() const { return m_key; }
+    inline int GetKey() const { return _key; }
 
-    std::string to_string() const override
+    std::string ToString() const override
     {
         std::stringstream ss;
-        ss << "KeyReleaseEvent (" << m_key << ")";
+        ss << "KeyReleaseEvent (" << _key << ")";
         return ss.str();
     }
-    EVENT_CLASS_TYPE(key_release)
+    EVENT_CLASS_TYPE(KEY_RELEASE)
 
 private:
-    int m_key;
+    int _key;
 };
 
 class MouseButtonPressEvent : public Event {
 public:
-    MouseButtonPressEvent(int button, float xpos, float ypos)
-        : m_button(button)
-        , m_xpos(xpos)
-        , m_ypos(ypos)
+    MouseButtonPressEvent(int button, float xPos, float yPos)
+        : _button(button)
+        , _xPos(xPos)
+        , _yPos(yPos)
     {
     }
 
-    inline int get_button() const { return m_button; }
-    inline double get_xpos() const { return m_xpos; }
-    inline double get_ypos() const { return m_ypos; }
+    inline int GetButton() const { return _button; }
+    inline double GetXPos() const { return _xPos; }
+    inline double GetYPos() const { return _yPos; }
 
-    std::string to_string() const override
+    std::string ToString() const override
     {
         std::stringstream ss;
-        ss << "MouseButtonPressEvent (" << m_button << ")";
+        ss << "MouseButtonPressEvent (" << _button << ")";
         return ss.str();
     }
-    EVENT_CLASS_TYPE(mouse_button_press)
+    EVENT_CLASS_TYPE(MOUSE_BUTTON_PRESS)
 
 private:
-    int m_button;
-    double m_xpos, m_ypos;
+    int _button;
+    double _xPos, _yPos;
 };
 
 class MouseButtonReleaseEvent : public Event {
 public:
     MouseButtonReleaseEvent(int button)
-        : m_button(button)
+        : _button(button)
     {
     }
 
-    inline int get_button() const { return m_button; }
+    inline int GetButton() const { return _button; }
 
-    std::string to_string() const override
+    std::string ToString() const override
     {
         std::stringstream ss;
-        ss << "MouseButtonReleaseEvent (" << m_button << ")";
+        ss << "MouseButtonReleaseEvent (" << _button << ")";
         return ss.str();
     }
-    EVENT_CLASS_TYPE(mouse_button_release)
+    EVENT_CLASS_TYPE(MOUSE_BUTTON_RELEASE)
 
 private:
-    int m_button;
+    int _button;
 };
 
 class MouseMoveEvent : public Event {
 public:
-    MouseMoveEvent(int xpos, int ypos)
-        : m_xpos(xpos)
-        , m_ypos(ypos)
+    MouseMoveEvent(int xPos, int yPos)
+        : _xPos(xPos)
+        , _yPos(yPos)
     {
     }
 
-    inline int get_x() const { return m_xpos; }
-    inline int get_y() const { return m_ypos; }
+    inline int GetX() const { return _xPos; }
+    inline int GetY() const { return _yPos; }
 
-    std::string to_string() const override
+    std::string ToString() const override
     {
         std::stringstream ss;
-        ss << "MouseMoveEvent (" << m_xpos << ", " << m_ypos << ")";
+        ss << "MouseMoveEvent (" << _xPos << ", " << _yPos << ")";
         return ss.str();
     }
-    EVENT_CLASS_TYPE(mouse_move)
+    EVENT_CLASS_TYPE(MOUSE_MOVE)
 
 private:
-    int m_xpos, m_ypos;
+    int _xPos, _yPos;
 };
 
 class MouseScrollEvent : public Event {
 public:
-    MouseScrollEvent(int yoffset)
-        : m_yoffset(yoffset)
+    MouseScrollEvent(int yOffset)
+        : _yOffset(yOffset)
     {
     }
 
-    inline int get_yoffset() const { return m_yoffset; }
+    inline int GetYOffset() const { return _yOffset; }
 
-    std::string to_string() const override
+    std::string ToString() const override
     {
         std::stringstream ss;
-        ss << "MouseScrollEvent (" << m_yoffset << ")";
+        ss << "MouseScrollEvent (" << _yOffset << ")";
         return ss.str();
     }
-    EVENT_CLASS_TYPE(mouse_scroll)
+    EVENT_CLASS_TYPE(MOUSE_SCROLL)
 
 private:
-    int m_yoffset;
+    int _yOffset;
 };
 
 class RayEvent : public Event {
 public:
     RayEvent(glm::vec3 origin, glm::vec3 direction)
-        : m_origin(origin)
-        , m_direction(direction)
+        : _origin(origin)
+        , _direction(direction)
     {
     }
 
-    glm::vec3 get_origin() { return m_origin; }
-    glm::vec3 get_direction() { return m_direction; }
+    glm::vec3 GetOrigin() { return _origin; }
+    glm::vec3 GetDirection() { return _direction; }
 
-    std::string to_string() const override
+    std::string ToString() const override
     {
         std::stringstream ss;
-        ss << "RayEvent (" << m_origin.x << ", " << m_origin.y << ", " << m_origin.z << ") (" << m_direction.x << ", " << m_direction.y << ", " << m_direction.z << ")";
+        ss << "RayEvent (" << _origin.x << ", " << _origin.y << ", " << _origin.z << ") (" << _direction.x << ", " << _direction.y << ", " << _direction.z << ")";
         return ss.str();
     }
 
-    EVENT_CLASS_TYPE(ray)
+    EVENT_CLASS_TYPE(RAY)
 
 private:
-    glm::vec3 m_origin;
-    glm::vec3 m_direction;
+    glm::vec3 _origin;
+    glm::vec3 _direction;
 };

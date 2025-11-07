@@ -20,7 +20,7 @@ public:
     void rotate_around(const float rotation_degree, const glm::vec3& rotation_axis, const float speed);
     void kill() { m_enabled = false; }
     void enable() { m_enabled = true; }
-    glm::mat4 get_model_matrix() const { return m_model.get_model_matrix(); }
+    glm::mat4 get_model_matrix() const { return m_model.GetModelMatrix(); }
     glm::vec2 get_position() const;
     glm::vec2 get_initial_position() const { return m_initial_position; }
     bool is_enabled() { return m_enabled; }

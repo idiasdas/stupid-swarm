@@ -3,101 +3,101 @@
 
 #include <fstream>
 
-Shader::Shader(const std::string& vertex_file_path, const std::string& fragment_file_path)
+Shader::Shader(const std::string& vertexFilePath, const std::string& fragmentFilePath)
 {
-    uint32_t vertez_shader_ID = glCreateShader(GL_VERTEX_SHADER);
-    uint32_t fragment_shader_ID = glCreateShader(GL_FRAGMENT_SHADER);
+    uint32_t vertezShaderID = glCreateShader(GL_VERTEX_SHADER);
+    uint32_t fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
-    std::string vertex_shader_code;
-    std::ifstream vertex_shader_stream(EXECUTABLE_UTILS_PATH + vertex_file_path, std::ios::in);
-    if (vertex_shader_stream.is_open()) {
+    std::string vertexShaderCode;
+    std::ifstream vertexShaderStream(EXECUTABLE_UTILS_PATH + vertexFilePath, std::ios::in);
+    if (vertexShaderStream.is_open()) {
         std::stringstream sstr;
-        sstr << vertex_shader_stream.rdbuf();
-        vertex_shader_code = sstr.str();
-        vertex_shader_stream.close();
+        sstr << vertexShaderStream.rdbuf();
+        vertexShaderCode = sstr.str();
+        vertexShaderStream.close();
     } else {
-        LOG_ERROR("Impossible to open {0}.", EXECUTABLE_UTILS_PATH + vertex_file_path);
+        LOG_ERROR("Impossible to open {0}.", EXECUTABLE_UTILS_PATH + vertexFilePath);
         getchar();
         exit(EXIT_FAILURE);
     }
 
-    std::string fragment_shader_code;
-    std::ifstream fragment_shader_stream(EXECUTABLE_UTILS_PATH + fragment_file_path, std::ios::in);
-    if (fragment_shader_stream.is_open()) {
+    std::string fragmentShaderCode;
+    std::ifstream fragmentShaderStream(EXECUTABLE_UTILS_PATH + fragmentFilePath, std::ios::in);
+    if (fragmentShaderStream.is_open()) {
         std::stringstream sstr;
-        sstr << fragment_shader_stream.rdbuf();
-        fragment_shader_code = sstr.str();
-        fragment_shader_stream.close();
+        sstr << fragmentShaderStream.rdbuf();
+        fragmentShaderCode = sstr.str();
+        fragmentShaderStream.close();
     } else {
-        LOG_ERROR("Impossible to open {0}.", EXECUTABLE_UTILS_PATH + fragment_file_path);
+        LOG_ERROR("Impossible to open {0}.", EXECUTABLE_UTILS_PATH + fragmentFilePath);
         getchar();
         exit(EXIT_FAILURE);
     }
 
     int result = GL_FALSE;
-    int infor_log_length;
+    int infoLogLength;
 
     // Compile Vertex Shader
-    LOG_INFO("Compiling shader: {0}", EXECUTABLE_UTILS_PATH + vertex_file_path);
-    char const* vertex_source_pointer = vertex_shader_code.c_str();
-    glShaderSource(vertez_shader_ID, 1, &vertex_source_pointer, NULL);
-    glCompileShader(vertez_shader_ID);
+    LOG_INFO("Compiling shader: {0}", EXECUTABLE_UTILS_PATH + vertexFilePath);
+    char const* vertexSourcePointer = vertexShaderCode.c_str();
+    glShaderSource(vertezShaderID, 1, &vertexSourcePointer, NULL);
+    glCompileShader(vertezShaderID);
 
     // Check Vertex Shader
-    glGetShaderiv(vertez_shader_ID, GL_COMPILE_STATUS, &result);
-    glGetShaderiv(vertez_shader_ID, GL_INFO_LOG_LENGTH, &infor_log_length);
-    if (infor_log_length > 0) {
-        std::vector<char> vertex_shader_error_msg(infor_log_length + 1);
-        glGetShaderInfoLog(vertez_shader_ID, infor_log_length, NULL, &vertex_shader_error_msg[0]);
-        printf("%s\n", &vertex_shader_error_msg[0]);
+    glGetShaderiv(vertezShaderID, GL_COMPILE_STATUS, &result);
+    glGetShaderiv(vertezShaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
+    if (infoLogLength > 0) {
+        std::vector<char> vertexShaderErrorMsg(infoLogLength + 1);
+        glGetShaderInfoLog(vertezShaderID, infoLogLength, NULL, &vertexShaderErrorMsg[0]);
+        printf("%s\n", &vertexShaderErrorMsg[0]);
     }
 
     // Compile Fragment Shader
-    LOG_INFO("Compiling shader: {0}", EXECUTABLE_UTILS_PATH + fragment_file_path);
-    char const* fragment_source_pointer = fragment_shader_code.c_str();
-    glShaderSource(fragment_shader_ID, 1, &fragment_source_pointer, NULL);
-    glCompileShader(fragment_shader_ID);
+    LOG_INFO("Compiling shader: {0}", EXECUTABLE_UTILS_PATH + fragmentFilePath);
+    char const* fragmentSourcePointer = fragmentShaderCode.c_str();
+    glShaderSource(fragmentShaderID, 1, &fragmentSourcePointer, NULL);
+    glCompileShader(fragmentShaderID);
 
     // Check Fragment Shader
-    glGetShaderiv(fragment_shader_ID, GL_COMPILE_STATUS, &result);
-    glGetShaderiv(fragment_shader_ID, GL_INFO_LOG_LENGTH, &infor_log_length);
-    if (infor_log_length > 0) {
-        std::vector<char> fragment_shader_error_msg(infor_log_length + 1);
-        glGetShaderInfoLog(fragment_shader_ID, infor_log_length, NULL, &fragment_shader_error_msg[0]);
-        LOG_ERROR("{0}", fragment_shader_error_msg.data());
+    glGetShaderiv(fragmentShaderID, GL_COMPILE_STATUS, &result);
+    glGetShaderiv(fragmentShaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
+    if (infoLogLength > 0) {
+        std::vector<char> fragmentShaderErrorMsg(infoLogLength + 1);
+        glGetShaderInfoLog(fragmentShaderID, infoLogLength, NULL, &fragmentShaderErrorMsg[0]);
+        LOG_ERROR("{0}", fragmentShaderErrorMsg.data());
     }
 
     // Link the program
     LOG_INFO("Linking program.");
-    uint32_t program_ID = glCreateProgram();
-    glAttachShader(program_ID, vertez_shader_ID);
-    glAttachShader(program_ID, fragment_shader_ID);
-    glLinkProgram(program_ID);
+    uint32_t programID = glCreateProgram();
+    glAttachShader(programID, vertezShaderID);
+    glAttachShader(programID, fragmentShaderID);
+    glLinkProgram(programID);
 
     // Check the program
-    glGetProgramiv(program_ID, GL_LINK_STATUS, &result);
-    glGetProgramiv(program_ID, GL_INFO_LOG_LENGTH, &infor_log_length);
-    if (infor_log_length > 0) {
-        std::vector<char> ProgramErrorMessage(infor_log_length + 1);
-        glGetProgramInfoLog(program_ID, infor_log_length, NULL, &ProgramErrorMessage[0]);
+    glGetProgramiv(programID, GL_LINK_STATUS, &result);
+    glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &infoLogLength);
+    if (infoLogLength > 0) {
+        std::vector<char> ProgramErrorMessage(infoLogLength + 1);
+        glGetProgramInfoLog(programID, infoLogLength, NULL, &ProgramErrorMessage[0]);
         LOG_ERROR("{0}", ProgramErrorMessage.data());
     }
 
-    glDetachShader(program_ID, vertez_shader_ID);
-    glDetachShader(program_ID, fragment_shader_ID);
+    glDetachShader(programID, vertezShaderID);
+    glDetachShader(programID, fragmentShaderID);
 
-    glDeleteShader(vertez_shader_ID);
-    glDeleteShader(fragment_shader_ID);
+    glDeleteShader(vertezShaderID);
+    glDeleteShader(fragmentShaderID);
 
-    m_renderer_ID = program_ID;
+    _rendererID = programID;
 }
 
-void Shader::bind() const
+void Shader::Bind() const
 {
-    glUseProgram(m_renderer_ID);
+    glUseProgram(_rendererID);
 }
 
-void Shader::unbind() const
+void Shader::Unbind() const
 {
     glUseProgram(0);
 }

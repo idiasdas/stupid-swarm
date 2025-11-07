@@ -1,18 +1,18 @@
 #include "swarm_settings_imgui.hpp"
 #include "imgui.h"
 
-void SwarmSettingsImgui::update()
+void SwarmSettingsImgui::Update()
 {
     ImGui::ShowDemoWindow();
-    if (_is_open) {
-        ImGui::Begin("Settings", &_is_open, ImGuiWindowFlags_MenuBar);
+    if (_isOpen) {
+        ImGui::Begin("Settings", &_isOpen, ImGuiWindowFlags_MenuBar);
 
-        auto window_size = ImGui::GetWindowSize();
-        window_size[1] = 20.f;
-        if (ImGui::Button(_paused ? "Play" : "Pause", window_size)) {
+        auto windowSize = ImGui::GetWindowSize();
+        windowSize[1] = 20.f;
+        if (ImGui::Button(_paused ? "Play" : "Pause", windowSize)) {
             _paused = !_paused;
         }
-        ImGui::SliderInt("Number of particles", &_nb_particles, 0, 10000);
+        ImGui::SliderInt("Number of particles", &_nbParticles, 0, 10000);
     }
     ImGui::End();
 }
