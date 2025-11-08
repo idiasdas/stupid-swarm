@@ -42,7 +42,7 @@ make
 # TODO
 
 1. Moving Goal Simulation
-- [ ] Particles color picking
+- [x] Particles color picking
 - [x] Start/Pause button
 - [ ] Reset button
 - [ ] Goal follow mouse

@@ -12,6 +12,33 @@
 #define PI glm::pi<float>()
 #define NB_SLICES 20
 
+namespace {
+
+void GetCircleVertices(std::vector<float>& verticesBuffer, const float size, glm::vec3 color)
+{
+    for (int i = 0; i < NB_SLICES; i++) {
+        const float alpha = 2 * PI / NB_SLICES;
+        verticesBuffer.push_back(0.0f);
+        verticesBuffer.push_back(0.0f);
+        verticesBuffer.push_back(0.0f);
+        verticesBuffer.push_back(color[0]);
+        verticesBuffer.push_back(color[1]);
+        verticesBuffer.push_back(color[2]);
+        verticesBuffer.push_back(0.0f + size * glm::cos(i * alpha));
+        verticesBuffer.push_back(0.0f + size * glm::sin(i * alpha));
+        verticesBuffer.push_back(0.0f);
+        verticesBuffer.push_back(color[0]);
+        verticesBuffer.push_back(color[1]);
+        verticesBuffer.push_back(color[2]);
+        verticesBuffer.push_back(0.0f + size * glm::cos((i + 1) * alpha));
+        verticesBuffer.push_back(0.0f + size * glm::sin((i + 1) * alpha));
+        verticesBuffer.push_back(0.0f);
+        verticesBuffer.push_back(color[0]);
+        verticesBuffer.push_back(color[1]);
+        verticesBuffer.push_back(color[2]);
+    }
+}
+}
 Particle::Particle(glm::vec2 position, const float size, ParticleType type)
     : _enabled(true)
     , _initialPosition(position)
@@ -19,48 +46,27 @@ Particle::Particle(glm::vec2 position, const float size, ParticleType type)
     , _lastUpdateTime(glfwGetTime())
     , _size(size)
 {
-    glm::vec3 color;
     switch (type) {
     case ParticleType::DRONE:
-        color = { 0.f, 1.f, 0.f };
+        _color = { 0.f, 1.f, 0.f };
         break;
     case ParticleType::GOAL:
-        color = { 1.f, 0.f, 0.f };
+        _color = { 1.f, 0.f, 0.f };
         break;
     case ParticleType::OBSTACLE:
-        color = { 1.f, 1.f, 1.f };
+        _color = { 1.f, 1.f, 1.f };
         break;
     }
 
-    std::vector<float> vertices_buffer;
-    for (int i = 0; i < NB_SLICES; i++) {
-        const float alpha = 2 * PI / NB_SLICES;
-        vertices_buffer.push_back(0.0f);
-        vertices_buffer.push_back(0.0f);
-        vertices_buffer.push_back(0.0f);
-        vertices_buffer.push_back(color[0]);
-        vertices_buffer.push_back(color[1]);
-        vertices_buffer.push_back(color[2]);
-        vertices_buffer.push_back(0.0f + size * glm::cos(i * alpha));
-        vertices_buffer.push_back(0.0f + size * glm::sin(i * alpha));
-        vertices_buffer.push_back(0.0f);
-        vertices_buffer.push_back(color[0]);
-        vertices_buffer.push_back(color[1]);
-        vertices_buffer.push_back(color[2]);
-        vertices_buffer.push_back(0.0f + size * glm::cos((i + 1) * alpha));
-        vertices_buffer.push_back(0.0f + size * glm::sin((i + 1) * alpha));
-        vertices_buffer.push_back(0.0f);
-        vertices_buffer.push_back(color[0]);
-        vertices_buffer.push_back(color[1]);
-        vertices_buffer.push_back(color[2]);
-    }
-    _model.BufferVertices(vertices_buffer);
+    std::vector<float> verticesBuffer;
+    GetCircleVertices(verticesBuffer, size, _color);
+    _model.BufferVertices(verticesBuffer);
 
-    std::vector<uint32_t> indices_buffer;
-    for (uint32_t i = 0; i < (uint32_t)vertices_buffer.size() / 6; i++) {
-        indices_buffer.push_back(i);
+    std::vector<uint32_t> indicesBuffer;
+    for (uint32_t i = 0; i < (uint32_t)verticesBuffer.size() / 6; i++) {
+        indicesBuffer.push_back(i);
     }
-    _model.BufferIndices(indices_buffer);
+    _model.BufferIndices(indicesBuffer);
     _model.Translate({ position[0], position[1], 0.f });
 }
 
@@ -109,6 +115,16 @@ void Particle::Update()
     if (!_enabled)
         return;
     _lastUpdateTime = glfwGetTime();
+}
+
+void Particle::UpdateVerticesColor(const glm::vec3& color)
+{
+    if (_color == color)
+        return;
+    _color = color;
+    std::vector<float> verticesBuffer;
+    GetCircleVertices(verticesBuffer, _size, _color);
+    _model.UpdateBufferVertices(verticesBuffer);
 }
 
 glm::vec2 Particle::GetPosition() const

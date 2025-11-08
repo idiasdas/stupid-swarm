@@ -18,6 +18,7 @@ public:
     void MoveTowards(glm::vec2 direction, float speed);
     void Rotate(const float rotationDegree, const glm::vec3& rotationAxis);
     void RotateAround(const float rotationDegree, const glm::vec3& rotationAxis, const float speed);
+    void UpdateVerticesColor(const glm::vec3& color);
     void Kill() { _enabled = false; }
     void Enable() { _enabled = true; }
     glm::mat4 GetModelMatrix() const { return _model.GetModelMatrix(); }
@@ -32,6 +33,7 @@ private:
     Model _model;
     float _size;
     glm::vec2 _initialPosition;
+    glm::vec3 _color;
     ParticleType _type;
     double _lastUpdateTime;
 };

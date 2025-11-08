@@ -9,6 +9,7 @@ public:
     bool IsPaused() { return _paused; }
     void SetNbParticles(int nbParticles) { _nbParticles = (nbParticles > _maxNbParticles) ? _maxNbParticles : nbParticles; }
     int GetNbParticles() { return _nbParticles; }
+    glm::vec3 GetParticlesColor() { return glm::vec3({ _colorParticles.x, _colorParticles.y, _colorParticles.z }); }
 
 private:
     bool _paused = true;
