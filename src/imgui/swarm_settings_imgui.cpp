@@ -1,6 +1,7 @@
 #include "swarm_settings_imgui.hpp"
 #include "imgui.h"
 #include "imgui/custom_imgui.hpp"
+#include "log.h"
 #include <algorithm>
 
 namespace {
@@ -23,16 +24,21 @@ SwarmSettingsImgui::SwarmSettingsImgui(GLFWwindow* window, OpenGLContext* contex
     style.WindowBorderSize = 0.0f;
     style.FrameBorderSize = 0.0f;
     style.PopupBorderSize = 0.0f;
-    style.WindowRounding = 12.f;
+    style.WindowRounding = 0.f;
+
+    for (int i = 0; i < 100; i++)
+        _fps[i] = 0.f;
 }
 
 void SwarmSettingsImgui::Update()
 {
-    ImGui::ShowDemoWindow();
+    const ImGuiViewport* viewport = ImGui::GetMainViewport();
+
     ImGui::SetNextWindowSize(ImVec2(450, 200), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowPos(ImVec2(viewport->WorkPos.x, viewport->WorkPos.y), ImGuiCond_Always, ImVec2(0.0f, 0.0f));
     auto itemsWidth = std::min(ImGui::GetWindowWidth() * 0.50f, 150.f);
 
-    ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_None);
+    ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 
     ImGui::SeparatorText("Simulation Control");
 
@@ -42,6 +48,10 @@ void SwarmSettingsImgui::Update()
     ImGui::SameLine();
     if (ImGui::Button("Reset", { itemsWidth, 20.f })) {
         _reset = true;
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Quit", { itemsWidth, 20.f })) {
+        _quit = true;
     }
 
     ImGui::PushItemWidth(itemsWidth);
@@ -61,6 +71,16 @@ void SwarmSettingsImgui::Update()
         "CTRL+click on individual component to input value.\n");
 
     ImGui::End();
+
+    ImGui::SetNextWindowPos(ImVec2(viewport->WorkPos.x + viewport->WorkSize.x, viewport->WorkPos.y), ImGuiCond_Always, ImVec2(1.0f, 0.0f));
+
+    ImGui::Begin("FPS", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar);
+    ImGui::PlotLines("FPS", _fps, 100);
+    ImGui::SameLine();
+    ImGui::Text("%.2f", _fps[99]);
+    ImGui::End();
+
+    ImGui::ShowDemoWindow();
 }
 
 void SwarmSettingsImgui::Reset()
@@ -68,4 +88,11 @@ void SwarmSettingsImgui::Reset()
     _nbParticles = 10000;
     _paused = true;
     _reset = false;
+}
+void SwarmSettingsImgui::LogFPS(float fps)
+{
+    for (int i = 0; i < 99; i++)
+        _fps[i] = _fps[i + 1];
+
+    _fps[99] = fps;
 }

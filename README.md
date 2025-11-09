@@ -46,7 +46,7 @@ make
 - [x] Start/Pause button
 - [x] Reset button
 - [ ] Goal follow mouse
-- [ ] FPS plot
+- [x] FPS plot
 - [ ] LOG window
 - [x] Particles number slider
 

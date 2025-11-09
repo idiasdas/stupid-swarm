@@ -15,10 +15,14 @@ public:
 
     bool IsPaused() { return _paused; }
     bool IsReset() { return _reset; }
+    bool TimeToQuit() { return _quit; }
+    void LogFPS(float fps);
 
 private:
     bool _paused = true;
     bool _reset = false;
+    bool _quit = false;
+    float _fps[100];
     int _nbParticles;
     int _maxNbParticles = 10000;
     ImVec4 _colorParticles = ImVec4(.0f / 255.0f, 255.0f / 255.0f, 0.0f / 255.0f, 250.0f / 255.0f);

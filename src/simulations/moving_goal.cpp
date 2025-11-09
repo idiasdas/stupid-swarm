@@ -58,6 +58,7 @@ void MovingGoalSimulation::Run()
 
         if (delta > 1.0f) {
             LOG_INFO("FPS: {0}", _framesCount / delta);
+            _gui.LogFPS(_framesCount / delta);
             _lastTime = curTime;
             _framesCount = 0;
         }
@@ -127,7 +128,7 @@ void MovingGoalSimulation::Run()
 
         glfwSwapBuffers(_context.GetWindowHandle());
         glfwPollEvents();
-    } while (glfwGetKey(_context.GetWindowHandle(), GLFW_KEY_Q) != GLFW_PRESS && glfwWindowShouldClose(_context.GetWindowHandle()) == 0);
+    } while (glfwGetKey(_context.GetWindowHandle(), GLFW_KEY_Q) != GLFW_PRESS && glfwWindowShouldClose(_context.GetWindowHandle()) == 0 && !_gui.TimeToQuit());
 
     _gui.Shutdown();
     glfwTerminate();
