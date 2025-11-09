@@ -44,7 +44,7 @@ make
 1. Moving Goal Simulation
 - [x] Particles color picking
 - [x] Start/Pause button
-- [ ] Reset button
+- [x] Reset button
 - [ ] Goal follow mouse
 - [ ] FPS plot
 - [ ] LOG window

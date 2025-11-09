@@ -41,10 +41,10 @@ void GetCircleVertices(std::vector<float>& verticesBuffer, const float size, glm
 }
 Particle::Particle(glm::vec2 position, const float size, ParticleType type)
     : _enabled(true)
+    , _size(size)
     , _initialPosition(position)
     , _type(type)
     , _lastUpdateTime(glfwGetTime())
-    , _size(size)
 {
     switch (type) {
     case ParticleType::DRONE:
@@ -67,7 +67,7 @@ Particle::Particle(glm::vec2 position, const float size, ParticleType type)
         indicesBuffer.push_back(i);
     }
     _model.BufferIndices(indicesBuffer);
-    _model.Translate({ position[0], position[1], 0.f });
+    _model.Translate({ position.x, position.y, 0.f });
 }
 
 void Particle::Draw(const Shader& shader, const glm::mat4 MVP) const
@@ -130,4 +130,12 @@ void Particle::UpdateVerticesColor(const glm::vec3& color)
 glm::vec2 Particle::GetPosition() const
 {
     return glm::vec2(_model.GetModelMatrix()[3]);
+}
+
+void Particle::Reset()
+{
+    _model.SetRotationMatrix(glm::mat4(1));
+    _model.SetTranslationMatrix(glm::mat4(1));
+    _model.SetScaleMatrix(glm::mat4(1));
+    _model.Translate({ _initialPosition.x, _initialPosition.y, 0.f });
 }

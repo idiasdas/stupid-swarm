@@ -39,6 +39,10 @@ void SwarmSettingsImgui::Update()
     if (ImGui::Button(_paused ? "Play" : "Pause", { itemsWidth, 20.f })) {
         _paused = !_paused;
     }
+    ImGui::SameLine();
+    if (ImGui::Button("Reset", { itemsWidth, 20.f })) {
+        _reset = true;
+    }
 
     ImGui::PushItemWidth(itemsWidth);
     ImGui::SliderInt("Number of particles", &_nbParticles, 0, 10000);
@@ -57,4 +61,11 @@ void SwarmSettingsImgui::Update()
         "CTRL+click on individual component to input value.\n");
 
     ImGui::End();
+}
+
+void SwarmSettingsImgui::Reset()
+{
+    _nbParticles = 10000;
+    _paused = true;
+    _reset = false;
 }

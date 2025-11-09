@@ -21,6 +21,7 @@ public:
     void UpdateVerticesColor(const glm::vec3& color);
     void Kill() { _enabled = false; }
     void Enable() { _enabled = true; }
+    void Reset();
     glm::mat4 GetModelMatrix() const { return _model.GetModelMatrix(); }
     glm::vec2 GetPosition() const;
     glm::vec2 GetInitialPosition() const { return _initialPosition; }

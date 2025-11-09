@@ -13,6 +13,7 @@ class MovingGoalSimulation {
 public:
     MovingGoalSimulation();
     void Run();
+    void Reset();
 
 private:
     OpenGLContext _context;

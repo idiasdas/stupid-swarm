@@ -46,6 +46,7 @@ MovingGoalSimulation::MovingGoalSimulation()
     _nbParticlesAlive = 0;
     _goalDirection = { -1.f, -1.f };
 }
+
 void MovingGoalSimulation::Run()
 {
     static glm::vec3 lastParticesColor = _gui.GetParticlesColor();
@@ -59,6 +60,10 @@ void MovingGoalSimulation::Run()
             LOG_INFO("FPS: {0}", _framesCount / delta);
             _lastTime = curTime;
             _framesCount = 0;
+        }
+
+        if (_gui.IsReset()) {
+            Reset();
         }
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -126,4 +131,15 @@ void MovingGoalSimulation::Run()
 
     _gui.Shutdown();
     glfwTerminate();
+}
+
+void MovingGoalSimulation::Reset()
+{
+    LOG_INFO("Reset everything!");
+    _gui.Reset();
+    for (auto& particle : _particles) {
+        particle.Reset();
+        particle.Enable();
+    }
+    _goal.Reset();
 }
