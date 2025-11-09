@@ -29,33 +29,32 @@ SwarmSettingsImgui::SwarmSettingsImgui(GLFWwindow* window, OpenGLContext* contex
 void SwarmSettingsImgui::Update()
 {
     ImGui::ShowDemoWindow();
-    ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(450, 200), ImGuiCond_FirstUseEver);
     auto itemsWidth = std::min(ImGui::GetWindowWidth() * 0.50f, 150.f);
 
-    if (_isOpen) {
-        ImGui::Begin("Settings", &_isOpen, ImGuiWindowFlags_None);
+    ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_None);
 
-        ImGui::SeparatorText("Simulation Control");
+    ImGui::SeparatorText("Simulation Control");
 
-        if (ImGui::Button(_paused ? "Play" : "Pause", { itemsWidth, 20.f })) {
-            _paused = !_paused;
-        }
-
-        ImGui::PushItemWidth(itemsWidth);
-        ImGui::SliderInt("Number of particles", &_nbParticles, 0, 10000);
-        ImGui::PopItemWidth();
-
-        ImGui::SeparatorText("Style Editing");
-        ImGui::ColorEdit3("Particles Color", (float*)&_colorParticles);
-        ImGui::SameLine();
-        HelpMarker(
-            "Click on the color square to open a color picker.\n"
-            "CTRL+click on individual component to input value.\n");
-        ImGui::ColorEdit3("Goal Color", (float*)&_colorGoal);
-        ImGui::SameLine();
-        HelpMarker(
-            "Click on the color square to open a color picker.\n"
-            "CTRL+click on individual component to input value.\n");
+    if (ImGui::Button(_paused ? "Play" : "Pause", { itemsWidth, 20.f })) {
+        _paused = !_paused;
     }
+
+    ImGui::PushItemWidth(itemsWidth);
+    ImGui::SliderInt("Number of particles", &_nbParticles, 0, 10000);
+    ImGui::PopItemWidth();
+
+    ImGui::SeparatorText("Style Editing");
+    ImGui::ColorEdit3("Particles Color", (float*)&_colorParticles);
+    ImGui::SameLine();
+    HelpMarker(
+        "Click on the color square to open a color picker.\n"
+        "CTRL+click on individual component to input value.\n");
+    ImGui::ColorEdit3("Goal Color", (float*)&_colorGoal);
+    ImGui::SameLine();
+    HelpMarker(
+        "Click on the color square to open a color picker.\n"
+        "CTRL+click on individual component to input value.\n");
+
     ImGui::End();
 }
