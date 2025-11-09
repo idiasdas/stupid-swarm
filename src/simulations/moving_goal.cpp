@@ -48,7 +48,8 @@ MovingGoalSimulation::MovingGoalSimulation()
 }
 void MovingGoalSimulation::Run()
 {
-    static glm::vec3 lastColor = _gui.GetParticlesColor();
+    static glm::vec3 lastParticesColor = _gui.GetParticlesColor();
+    static glm::vec3 lastGoalColor = _gui.GetParticlesColor();
     do {
         _framesCount++;
         double curTime = glfwGetTime();
@@ -101,10 +102,14 @@ void MovingGoalSimulation::Run()
 
         _goal.Update();
         _goal.Draw(_colorShader, _camera.GetProjectionMatrix() * _camera.GetViewMatrix() * _goal.GetModelMatrix());
-        if (lastColor != _gui.GetParticlesColor()) {
-            lastColor = _gui.GetParticlesColor();
+        if (lastParticesColor != _gui.GetParticlesColor()) {
+            lastParticesColor = _gui.GetParticlesColor();
             for (auto& particle : _particles)
-                particle.UpdateVerticesColor(lastColor);
+                particle.UpdateVerticesColor(lastParticesColor);
+        }
+        if (lastGoalColor != _gui.GetGoalColor()) {
+            lastGoalColor = _gui.GetGoalColor();
+            _goal.UpdateVerticesColor(lastGoalColor);
         }
         for (auto& particle : _particles) {
             particle.Update();

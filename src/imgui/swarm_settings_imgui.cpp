@@ -46,7 +46,12 @@ void SwarmSettingsImgui::Update()
         ImGui::PopItemWidth();
 
         ImGui::SeparatorText("Style Editing");
-        ImGui::ColorEdit3("MyColor##1", (float*)&_colorParticles);
+        ImGui::ColorEdit3("Particles Color", (float*)&_colorParticles);
+        ImGui::SameLine();
+        HelpMarker(
+            "Click on the color square to open a color picker.\n"
+            "CTRL+click on individual component to input value.\n");
+        ImGui::ColorEdit3("Goal Color", (float*)&_colorGoal);
         ImGui::SameLine();
         HelpMarker(
             "Click on the color square to open a color picker.\n"
