@@ -47,7 +47,7 @@ make
 - [x] Reset button
 - [ ] Goal follow mouse
 - [x] FPS plot
-- [ ] LOG window
+- [x] LOG tab
 - [x] Particles number slider
 
 2. Eletric forces simulation

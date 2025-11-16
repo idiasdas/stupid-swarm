@@ -6,7 +6,6 @@
 #include "renderer/model.h"
 #include "renderer/opengl-context.h"
 #include "renderer/shader.h"
-#include <random>
 
 class MovingGoalSimulation {
 

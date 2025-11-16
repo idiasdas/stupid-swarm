@@ -3,11 +3,15 @@
 #include "log.h"
 
 Camera* gCamera = nullptr;
+SwarmSettingsImgui* gGui = nullptr;
+
 void EventManager(Event& event)
 {
     gCamera->OnEvent(event);
-    if (event.GetEventType() != EventType::MOUSE_MOVE)
+    if (event.GetEventType() != EventType::MOUSE_MOVE) {
         LOG_INFO(event.ToString());
+        gGui->LogToGui("[INFO] %s\n", event.ToString().c_str());
+    }
 }
 
 MovingGoalSimulation::MovingGoalSimulation()
@@ -18,10 +22,9 @@ MovingGoalSimulation::MovingGoalSimulation()
     , _gui(_context.GetWindowHandle(), &_context)
 {
     gCamera = &_camera;
+    gGui = &_gui;
+
     _gui.SetNbParticles(10000);
-    std::random_device rd; // Will be used to obtain a seed for the random number engine
-    std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
-    std::uniform_real_distribution<> dis(-1.f, 1.f);
     std::vector<float> bufferLines = {
         0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
         10.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,

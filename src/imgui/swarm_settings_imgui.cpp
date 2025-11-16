@@ -1,6 +1,7 @@
 #include "swarm_settings_imgui.hpp"
 #include "imgui.h"
 #include "imgui/custom_imgui.hpp"
+#include "imgui_internal.h"
 #include "log.h"
 #include <algorithm>
 
@@ -15,6 +16,7 @@ static void HelpMarker(const char* desc)
         ImGui::EndTooltip();
     }
 }
+
 }
 
 SwarmSettingsImgui::SwarmSettingsImgui(GLFWwindow* window, OpenGLContext* context)
@@ -36,39 +38,49 @@ void SwarmSettingsImgui::Update()
 
     ImGui::SetNextWindowSize(ImVec2(450, 200), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowPos(ImVec2(viewport->WorkPos.x, viewport->WorkPos.y), ImGuiCond_Always, ImVec2(0.0f, 0.0f));
-    auto itemsWidth = std::min(ImGui::GetWindowWidth() * 0.50f, 150.f);
+    auto itemsWidth = std::min(ImGui::GetWindowWidth() * 0.35f, 150.f);
 
-    ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::Begin("Control Pane", nullptr, ImGuiWindowFlags_None);
+    if (ImGui::BeginTabBar("##TabBar")) {
+        if (ImGui::BeginTabItem("Settings")) {
 
-    ImGui::SeparatorText("Simulation Control");
+            ImGui::SeparatorText("Simulation Control");
 
-    if (ImGui::Button(_paused ? "Play" : "Pause", { itemsWidth, 20.f })) {
-        _paused = !_paused;
+            if (ImGui::Button(_paused ? "Play" : "Pause", { itemsWidth, 20.f })) {
+                _paused = !_paused;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Reset", { itemsWidth, 20.f })) {
+                _reset = true;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Quit", { itemsWidth, 20.f })) {
+                _quit = true;
+            }
+
+            ImGui::PushItemWidth(itemsWidth);
+            ImGui::SliderInt("Number of particles", &_nbParticles, 0, 10000);
+            ImGui::PopItemWidth();
+
+            ImGui::SeparatorText("Style Editing");
+            ImGui::ColorEdit3("Particles Color", (float*)&_colorParticles);
+            ImGui::SameLine();
+            HelpMarker(
+                "Click on the color square to open a color picker.\n"
+                "CTRL+click on individual component to input value.\n");
+            ImGui::ColorEdit3("Goal Color", (float*)&_colorGoal);
+            ImGui::SameLine();
+            HelpMarker(
+                "Click on the color square to open a color picker.\n"
+                "CTRL+click on individual component to input value.\n");
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Logs")) {
+            // ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
+            _log.Draw();
+            ImGui::EndTabItem();
+        }
     }
-    ImGui::SameLine();
-    if (ImGui::Button("Reset", { itemsWidth, 20.f })) {
-        _reset = true;
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Quit", { itemsWidth, 20.f })) {
-        _quit = true;
-    }
-
-    ImGui::PushItemWidth(itemsWidth);
-    ImGui::SliderInt("Number of particles", &_nbParticles, 0, 10000);
-    ImGui::PopItemWidth();
-
-    ImGui::SeparatorText("Style Editing");
-    ImGui::ColorEdit3("Particles Color", (float*)&_colorParticles);
-    ImGui::SameLine();
-    HelpMarker(
-        "Click on the color square to open a color picker.\n"
-        "CTRL+click on individual component to input value.\n");
-    ImGui::ColorEdit3("Goal Color", (float*)&_colorGoal);
-    ImGui::SameLine();
-    HelpMarker(
-        "Click on the color square to open a color picker.\n"
-        "CTRL+click on individual component to input value.\n");
 
     ImGui::End();
 
@@ -89,6 +101,7 @@ void SwarmSettingsImgui::Reset()
     _paused = true;
     _reset = false;
 }
+
 void SwarmSettingsImgui::LogFPS(float fps)
 {
     for (int i = 0; i < 99; i++)
