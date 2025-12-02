@@ -51,3 +51,5 @@ make
 - [x] Particles number slider
 
 2. Eletric forces simulation
+- [ ] Naive approach
+- [ ] Space split approach
